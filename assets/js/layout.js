@@ -9,7 +9,7 @@ const MENU_ITEMS = [
   { href: 'laporan.html',      icon: '📄', label: 'Data Laporan',      roles: ['admin','petugas','pj'] },
   { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj'] },
   { href: 'master-petugas.html', icon: '👥', label: 'Master Petugas',  roles: ['admin'] },
-  { href: 'master-unit.html',  icon: '🏥', label: 'Master Unit',       roles: ['admin'] }
+  { href: 'master-unit.html',  icon: '🏥', label: 'Master Ruangan',       roles: ['admin'] }
 ];
 
 /**
