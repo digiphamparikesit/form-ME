@@ -74,7 +74,7 @@ async function renderLayout(activePage) {
             <div class="user-avatar">${(profile.nama || '?').charAt(0).toUpperCase()}</div>
             <div class="user-detail">
               <strong>${profile.nama}</strong>
-              <small>${roleLabel(profile.role)}${profile.unit?.nama_unit ? ' • ' + profile.unit.nama_unit : ''}</small>
+              <small>${roleLabel(profile.role)}${profile.ruangan?.nama_ruangan ? ' • ' + profile.ruangan.nama_ruangan : ''}</small>
             </div>
           </div>
           <button id="btnLogout" class="btn btn-outline-danger btn-sm">Keluar</button>
