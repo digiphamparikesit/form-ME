@@ -1,5 +1,5 @@
 // ============================================================
-// CETAK PDF - Generate PDF Landscape
+// CETAK PDF - Generate PDF Landscape (TEMA KUNING LEMBUT)
 // ============================================================
 
 let allLaporan = [];
@@ -10,6 +10,22 @@ const TAHAP_LABEL = {
   transcribing: 'Transcribing Error',
   dispensing: 'Dispensing Error',
   administering: 'Administering Error'
+};
+
+// ============================================================
+// PALET WARNA KUNING LEMBUT
+// ============================================================
+const COLOR = {
+  headerBg:      [251, 191, 36],   // #FBBF24 kuning amber
+  headerText:    [120, 53, 15],    // #78350F cokelat tua
+  rowHighlight:  [254, 243, 199],  // #FEF3C7 kuning lembut
+  tahapBg:       [255, 251, 235],  // #FFFBEB kuning sangat muda
+  gradeBoxBg:    [255, 251, 235],  // #FFFBEB kuning sangat muda
+  checkmark:     [180, 83, 9],     // #B45309 orange tua
+  tableBorder:   [217, 119, 6],    // #D97706 orange medium
+  tableGrid:     [220, 220, 220],  // abu-abu grid
+  textDark:      [0, 0, 0],
+  textWhite:     [255, 255, 255]
 };
 
 // ============================================================
@@ -209,6 +225,7 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   doc.text(`No. Laporan: ${laporan.no_laporan}`, pageW / 2, y + 16, { align: 'center' });
 
   y += 24;
+  doc.setDrawColor(...COLOR.tableBorder);
   doc.setLineWidth(0.5);
   doc.line(margin, y, pageW - margin, y);
   y += 5;
@@ -254,21 +271,23 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
   // ============ KALKULASI LEBAR KOLOM ============
   const gradeKodes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-  const gradeCellW = 6;                                 // 6 mm per kolom grade
-  const gradeTotalW = gradeKodes.length * gradeCellW;   // 54 mm
-  const gradeStartX = pageW - margin - gradeTotalW;     // titik mulai kolom A
+  const gradeCellW = 6;
+  const gradeTotalW = gradeKodes.length * gradeCellW;
+  const gradeStartX = pageW - margin - gradeTotalW;
   const colNo = margin + 2;
   const colTahap = margin + 12;
   const colItem = margin + 48;
 
-  // Helper: gambar header tabel (dipakai di halaman 1 & 2+)
+  // ============================================================
+  // HELPER: Gambar header tabel (dipakai di halaman 1 & 2+)
+  // ============================================================
   function drawTableHeader(startY) {
-    // Bar hijau
-    doc.setFillColor(22, 163, 74);
+    // Bar KUNING LEMBUT
+    doc.setFillColor(...COLOR.headerBg);
     doc.rect(margin, startY, pageW - margin * 2, 7, 'F');
 
-    // Text putih
-    doc.setTextColor(255, 255, 255);
+    // Text COKELAT TUA
+    doc.setTextColor(...COLOR.headerText);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
 
@@ -276,38 +295,37 @@ async function generatePDFPage(doc, data, addNewPage = true) {
     doc.text('TAHAPAN', colTahap, startY + 5);
     doc.text('MONITORING MEDICATION ERROR', colItem, startY + 5);
 
-    // Grade headers A-I (center-align)
     gradeKodes.forEach((k, i) => {
       const cx = gradeStartX + (i * gradeCellW) + (gradeCellW / 2);
       doc.text(k, cx, startY + 5, { align: 'center' });
     });
 
-    // Garis vertikal putih antar kolom (header)
-    doc.setDrawColor(255, 255, 255);
+    // Garis vertikal orange tua antar kolom
+    doc.setDrawColor(...COLOR.checkmark);
     doc.setLineWidth(0.3);
 
-    // Garis vertikal kolom utama
     const colTahapStart = margin + 10;
     const colItemStart = margin + 45;
     doc.line(colTahapStart, startY, colTahapStart, startY + 7);
     doc.line(colItemStart, startY, colItemStart, startY + 7);
 
-    // Garis vertikal kolom grade A-I
     for (let i = 0; i <= gradeKodes.length; i++) {
       const xLine = gradeStartX + (i * gradeCellW);
       doc.line(xLine, startY, xLine, startY + 7);
     }
 
     // Reset warna & font
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(...COLOR.textDark);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
   }
 
-  // Helper: gambar garis horizontal + vertical per row
+  // ============================================================
+  // HELPER: Gambar garis grid per row
+  // ============================================================
   function drawRowGrid(startY, height, isHighlighted = false) {
-    // Garis horizontal di atas & bawah row
-    doc.setDrawColor(200, 200, 200);
+    // Garis horizontal abu-abu
+    doc.setDrawColor(...COLOR.tableGrid);
     doc.setLineWidth(0.15);
     doc.line(margin, startY, pageW - margin, startY);
     doc.line(margin, startY + height, pageW - margin, startY + height);
@@ -324,8 +342,8 @@ async function generatePDFPage(doc, data, addNewPage = true) {
       doc.line(xLine, startY, xLine, startY + height);
     }
 
-    // Border luar kiri & kanan
-    doc.setDrawColor(150, 150, 150);
+    // Border luar kiri & kanan (orange tua)
+    doc.setDrawColor(...COLOR.tableBorder);
     doc.setLineWidth(0.3);
     doc.line(margin, startY, margin, startY + height);
     doc.line(pageW - margin, startY, pageW - margin, startY + height);
@@ -353,17 +371,19 @@ async function generatePDFPage(doc, data, addNewPage = true) {
       y += 7;
     }
 
-    // Header tahap (baris tipis abu-hijau)
-    doc.setFillColor(240, 253, 244);
+    // Header tahap (kuning sangat muda)
+    doc.setFillColor(...COLOR.tahapBg);
     doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
+    doc.setTextColor(...COLOR.headerText);
     doc.text(String(rowNum), colNo, y + 3.5);
     doc.text(TAHAP_LABEL[tahap], colTahap, y + 3.5);
+    doc.setTextColor(...COLOR.textDark);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
 
-    // ✅ Gambar garis grid untuk row ini
+    // Grid row tahap
     drawRowGrid(y, rowH);
 
     y += rowH;
@@ -373,41 +393,42 @@ async function generatePDFPage(doc, data, addNewPage = true) {
       const detailItem = detail.find(d => d.item && d.item.id === item.id);
       const isChecked = !!detailItem;
 
-      // Highlight kalau dicentang
+      // Highlight kalau dicentang (kuning lembut)
       if (isChecked) {
-        doc.setFillColor(220, 252, 231);
+        doc.setFillColor(...COLOR.rowHighlight);
         doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
       }
 
-      // Nama item (potong kalau kepanjangan)
+      // Nama item
       const itemText = item.nama_item.length > 70
         ? item.nama_item.substring(0, 70) + '...'
         : item.nama_item;
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7.5);
+      doc.setTextColor(...COLOR.textDark);
       doc.text(itemText, colItem, y + 3.5);
 
-       // Tanda centang di kolom grade (gambar manual pakai 2 garis)
+      // Tanda centang di kolom grade (manual, warna cokelat tua)
       if (isChecked && laporan.grade) {
         const gradeIdx = gradeKodes.indexOf(laporan.grade);
         if (gradeIdx >= 0) {
           const cx = gradeStartX + (gradeIdx * gradeCellW) + (gradeCellW / 2);
           const cy = y + 2.5;
-          
-          doc.setDrawColor(22, 163, 74);   // hijau
-          doc.setLineWidth(0.6);
-          
+
+          doc.setDrawColor(...COLOR.checkmark);
+          doc.setLineWidth(0.7);
+
           // Garis 1: kiri-bawah → tengah
           doc.line(cx - 1.5, cy, cx - 0.4, cy + 1.5);
           // Garis 2: tengah → kanan-atas
           doc.line(cx - 0.4, cy + 1.5, cx + 2, cy - 0.8);
-          
-          doc.setDrawColor(0, 0, 0);        // reset warna
+
+          doc.setDrawColor(...COLOR.textDark);
           doc.setLineWidth(0.2);
         }
       }
 
-     // ✅ Gambar garis grid untuk row ini
+      // Grid row item
       drawRowGrid(y, rowH, isChecked);
 
       y += rowH;
@@ -425,8 +446,7 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   });
 
   // ============ GARIS PENUTUP TABEL ============
-  // Garis horizontal tebal sebagai penutup
-  doc.setDrawColor(22, 163, 74);
+  doc.setDrawColor(...COLOR.tableBorder);
   doc.setLineWidth(0.6);
   doc.line(margin, y, pageW - margin, y);
 
@@ -435,21 +455,28 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   // ============ KETERANGAN GRADE ============
   const selectedGrade = grades.find(g => g.kode === laporan.grade);
   if (selectedGrade) {
-    // Cek page break
     if (y > pageH - 50) {
       doc.addPage('a4', 'landscape');
       y = 20;
     }
 
-    doc.setFillColor(240, 253, 244);
+    // Box kuning sangat muda
+    doc.setFillColor(...COLOR.gradeBoxBg);
     doc.rect(margin, y, pageW - margin * 2, 12, 'F');
+
+    // Border kiri orange tua
+    doc.setDrawColor(...COLOR.tableBorder);
+    doc.setLineWidth(1);
+    doc.line(margin, y, margin, y + 12);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
+    doc.setTextColor(...COLOR.headerText);
     doc.text(`GRADE: ${selectedGrade.kode} (${selectedGrade.kategori})`, margin + 3, y + 5);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
+    doc.setTextColor(...COLOR.textDark);
     const desc = selectedGrade.deskripsi.length > 150
       ? selectedGrade.deskripsi.substring(0, 150) + '...'
       : selectedGrade.deskripsi;
@@ -466,7 +493,9 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLOR.headerText);
   doc.text('DESKRIPSI KEJADIAN:', margin, y);
+  doc.setTextColor(...COLOR.textDark);
   y += 4;
   doc.setFont('helvetica', 'normal');
   const descLines = doc.splitTextToSize(laporan.deskripsi_kejadian || '-', pageW - margin * 2 - 5);
@@ -475,7 +504,9 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
   if (laporan.tindakan) {
     doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...COLOR.headerText);
     doc.text('TINDAKAN/INTERVENSI:', margin, y);
+    doc.setTextColor(...COLOR.textDark);
     y += 4;
     doc.setFont('helvetica', 'normal');
     const tindakanLines = doc.splitTextToSize(laporan.tindakan, pageW - margin * 2 - 5);
@@ -484,11 +515,8 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   }
 
   // ============ TANDA TANGAN ============
-  // ============ TANDA TANGAN ============
-  // TTD langsung 15mm di bawah teks terakhir (tidak dipaksa ke bawah)
   let finalSignY = y + 15;
 
-  // Kalau TTD + nama kepanjangan, pindah ke halaman baru
   if (finalSignY + 30 > pageH - 15) {
     doc.addPage('a4', 'landscape');
     finalSignY = 25;
@@ -500,17 +528,18 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...COLOR.textDark);
 
   // Label
   doc.text('Petugas Pelapor,', leftX, finalSignY);
   doc.text('Apoteker PJ / Verifikator,', rightX, finalSignY);
 
-  // Garis tanda tangan
-  doc.setDrawColor(22, 163, 74);    // hijau
+  // Garis tanda tangan (orange tua)
+  doc.setDrawColor(...COLOR.tableBorder);
   doc.setLineWidth(0.5);
   doc.line(leftX, finalSignY + 18, leftX + signW, finalSignY + 18);
   doc.line(rightX, finalSignY + 18, rightX + signW, finalSignY + 18);
-  doc.setDrawColor(0, 0, 0);        // reset
+  doc.setDrawColor(...COLOR.textDark);
   doc.setLineWidth(0.2);
 
   // Nama
