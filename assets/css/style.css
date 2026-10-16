@@ -962,6 +962,12 @@ a:hover { color: var(--primary-dark); }
   gap: 20px;
 }
 
+.dashboard-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
 /* ============================================================
    CHART CONTAINER
    ============================================================ */
@@ -1031,21 +1037,21 @@ a:hover { color: var(--primary-dark); }
 .bar-I { background: #7F1D1D; }
 
 /* ============================================================
-   TREN CHART (Vertical Bars)
+   TREN CHART (Vertical Bars) - v2
    ============================================================ */
 .tren-chart {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  height: 280px;
-  padding: 20px 4px 0;
-  border-bottom: 1px solid var(--border-light);
-  overflow-x: auto;
+  justify-content: space-between;
+  gap: 8px;
+  height: 240px;
+  padding: 20px 8px 0;
+  border-bottom: 2px solid var(--border-light);
 }
 
 .tren-bar-wrapper {
   flex: 1;
-  min-width: 32px;
+  min-width: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1057,63 +1063,32 @@ a:hover { color: var(--primary-dark); }
   position: relative;
 }
 
-.tren-bar {
-  width: 70%;
-  background: linear-gradient(180deg, var(--secondary), var(--primary));
-  border-radius: 4px 4px 0 0;
-  transition: height .4s ease;
-  min-height: 6px;
-}
-
-.tren-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  transform: rotate(-45deg);
-  transform-origin: center;
-  white-space: nowrap;
-  margin-top: 6px;
-  height: 20px;
-}
-
-.tren-bar-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 4px;
-  cursor: pointer;
-  transition: all .2s;
-}
-
 .tren-bar-wrapper:hover {
   background: var(--primary-bg);
   border-radius: 4px 4px 0 0;
 }
 
 .tren-value {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--primary-dark);
-  min-height: 14px;
+  min-height: 16px;
 }
 
 .tren-bar {
-  width: 80%;
+  width: 70%;
   background: linear-gradient(180deg, var(--secondary), var(--primary));
   border-radius: 4px 4px 0 0;
   transition: height .4s ease;
-  min-height: 4px;
+  min-height: 8px;
 }
 
 .tren-label {
   font-size: 10px;
   color: var(--text-muted);
-  transform: rotate(-45deg);
-  transform-origin: left top;
   white-space: nowrap;
-  margin-top: 4px;
+  margin-top: 6px;
+  font-weight: 600;
 }
 
 /* ============================================================
