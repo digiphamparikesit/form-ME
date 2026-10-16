@@ -282,9 +282,17 @@ async function generatePDFPage(doc, data, addNewPage = true) {
       doc.text(k, cx, startY + 5, { align: 'center' });
     });
 
-    // Garis vertikal putih antar kolom grade
+    // Garis vertikal putih antar kolom (header)
     doc.setDrawColor(255, 255, 255);
     doc.setLineWidth(0.3);
+
+    // Garis vertikal kolom utama
+    const colTahapStart = margin + 10;
+    const colItemStart = margin + 45;
+    doc.line(colTahapStart, startY, colTahapStart, startY + 7);
+    doc.line(colItemStart, startY, colItemStart, startY + 7);
+
+    // Garis vertikal kolom grade A-I
     for (let i = 0; i <= gradeKodes.length; i++) {
       const xLine = gradeStartX + (i * gradeCellW);
       doc.line(xLine, startY, xLine, startY + 7);
@@ -294,6 +302,33 @@ async function generatePDFPage(doc, data, addNewPage = true) {
     doc.setTextColor(0, 0, 0);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
+  }
+
+  // Helper: gambar garis horizontal + vertical per row
+  function drawRowGrid(startY, height, isHighlighted = false) {
+    // Garis horizontal di atas & bawah row
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.15);
+    doc.line(margin, startY, pageW - margin, startY);
+    doc.line(margin, startY + height, pageW - margin, startY + height);
+
+    // Garis vertikal kolom utama
+    const colTahapStart = margin + 10;
+    const colItemStart = margin + 45;
+    doc.line(colTahapStart, startY, colTahapStart, startY + height);
+    doc.line(colItemStart, startY, colItemStart, startY + height);
+
+    // Garis vertikal kolom grade A-I
+    for (let i = 0; i <= gradeKodes.length; i++) {
+      const xLine = gradeStartX + (i * gradeCellW);
+      doc.line(xLine, startY, xLine, startY + height);
+    }
+
+    // Border luar kiri & kanan
+    doc.setDrawColor(150, 150, 150);
+    doc.setLineWidth(0.3);
+    doc.line(margin, startY, margin, startY + height);
+    doc.line(pageW - margin, startY, pageW - margin, startY + height);
   }
 
   // ============ HEADER TABEL HALAMAN 1 ============
@@ -327,6 +362,10 @@ async function generatePDFPage(doc, data, addNewPage = true) {
     doc.text(TAHAP_LABEL[tahap], colTahap, y + 3.5);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
+
+    // ✅ Gambar garis grid untuk row ini
+    drawRowGrid(y, rowH);
+
     y += rowH;
 
     // Item rows
@@ -368,6 +407,9 @@ async function generatePDFPage(doc, data, addNewPage = true) {
         }
       }
 
+     // ✅ Gambar garis grid untuk row ini
+      drawRowGrid(y, rowH, isChecked);
+
       y += rowH;
 
       // Page break antar item
@@ -383,9 +425,11 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   });
 
   // ============ GARIS PENUTUP TABEL ============
+  // Garis horizontal tebal sebagai penutup
   doc.setDrawColor(22, 163, 74);
-  doc.setLineWidth(0.5);
+  doc.setLineWidth(0.6);
   doc.line(margin, y, pageW - margin, y);
+
   y += 5;
 
   // ============ KETERANGAN GRADE ============
