@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Medication Error | Monitoring ME - RSUD AM Parikesit</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/logo-rsud.png">
+</head>
+<body>
+
+  <div class="app-layout">
+    <div id="app-sidebar"></div>
+    <div id="app-topbar"></div>
+
+    <main id="app-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">Input Medication Error</h3>
+          <p class="page-subtitle">Catat kejadian Medication Error di Instalasi Farmasi</p>
+        </div>
+      </div>
+
+      <!-- STEPPER HEADER -->
+      <div class="stepper" id="stepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-num">1</div>
+          <div class="step-label">Data Kejadian</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" data-step="2">
+          <div class="step-num">2</div>
+          <div class="step-label">Item Error</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" data-step="3">
+          <div class="step-num">3</div>
+          <div class="step-label">Grade & Deskripsi</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" data-step="4">
+          <div class="step-num">4</div>
+          <div class="step-label">Review & Simpan</div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           STEP 1: DATA KEJADIAN
+           ============================================================ -->
+      <div class="card step-content" id="step1">
+        <h3 class="card-title">📋 Data Kejadian</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tglTemuan">Tanggal Temuan <span class="required">*</span></label>
+            <input type="date" id="tglTemuan" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jamTemuan">Jam Temuan <span class="required">*</span></label>
+            <input type="time" id="jamTemuan" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tglLaporan">Tanggal Laporan <span class="required">*</span></label>
+            <input type="date" id="tglLaporan" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="jamLaporan">Jam Laporan <span class="required">*</span></label>
+            <input type="time" id="jamLaporan" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ruanganId">Ruangan / Lokasi Kejadian <span class="required">*</span></label>
+          <select id="ruanganId" class="form-control" required>
+            <option value="">-- Pilih Ruangan --</option>
+          </select>
+          <small class="form-hint">Ruangan tempat kejadian ME terjadi</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="namaPasien">Nama Pasien <span class="required">*</span></label>
+            <input type="text" id="namaPasien" class="form-control"
+                   placeholder="contoh: Tn. Ahmad" required>
+          </div>
+          <div class="form-group">
+            <label for="noRm">No. RM <span class="required">*</span></label>
+            <input type="text" id="noRm" class="form-control"
+                   placeholder="contoh: 123456" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="namaDpjp">Nama DPJP (Dokter Penanggung Jawab)</label>
+          <input type="text" id="namaDpjp" class="form-control"
+                 placeholder="contoh: dr. Budi, Sp.PD">
+        </div>
+
+        <div class="alert alert-info" style="margin-top:16px;">
+          <strong>👤 Petugas Pelapor:</strong>
+          <span id="petugasPelapor">-</span>
+        </div>
+
+        <div id="errorStep1" class="alert alert-danger" style="display:none;"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="btnNext1">
+            Lanjut ke Item Error →
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           STEP 2: ITEM ERROR
+           ============================================================ -->
+      <div class="card step-content" id="step2" style="display:none;">
+        <h3 class="card-title">☑️ Pilih Item Error</h3>
+        <p class="text-muted" style="margin-bottom:16px;">
+          Centang item yang sesuai. Minimal 1 item harus dipilih.
+        </p>
+
+        <div id="itemsContainer">
+          <!-- Diisi oleh JS -->
+          <p class="text-center text-muted">Memuat item error...</p>
+        </div>
+
+        <div id="errorStep2" class="alert alert-danger" style="display:none;"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btnPrev2">← Kembali</button>
+          <button type="button" class="btn btn-primary" id="btnNext2">
+            Lanjut ke Grade →
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           STEP 3: GRADE & DESKRIPSI
+           ============================================================ -->
+      <div class="card step-content" id="step3" style="display:none;">
+        <h3 class="card-title">🎯 Grade Insiden & Deskripsi</h3>
+
+        <div class="form-group">
+          <label>Grade Dampak Insiden <span class="required">*</span></label>
+          <div class="grade-grid" id="gradeGrid">
+            <!-- Diisi oleh JS -->
+          </div>
+        </div>
+
+        <div id="gradeInfo" class="alert alert-info" style="display:none;">
+          <strong id="gradeInfoTitle">-</strong><br>
+          <span id="gradeInfoDesc">-</span>
+        </div>
+
+        <div class="form-group">
+          <label for="deskripsiKejadian">Deskripsi Kejadian <span class="required">*</span></label>
+          <textarea id="deskripsiKejadian" class="form-control" rows="4"
+                    placeholder="Jelaskan kronologi kejadian ME secara singkat dan jelas..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="tindakan">Tindakan / Intervensi yang Dilakukan</label>
+          <textarea id="tindakan" class="form-control" rows="3"
+                    placeholder="Tindakan yang sudah dilakukan untuk mengatasi/mencegah..."></textarea>
+        </div>
+
+        <div id="errorStep3" class="alert alert-danger" style="display:none;"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btnPrev3">← Kembali</button>
+          <button type="button" class="btn btn-primary" id="btnNext3">
+            Lanjut ke Review →
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           STEP 4: REVIEW
+           ============================================================ -->
+      <div class="card step-content" id="step4" style="display:none;">
+        <h3 class="card-title">🔍 Review & Simpan</h3>
+        <p class="text-muted" style="margin-bottom:16px;">
+          Periksa kembali data sebelum disimpan.
+        </p>
+
+        <div id="reviewContent">
+          <!-- Diisi oleh JS -->
+        </div>
+
+        <div id="errorStep4" class="alert alert-danger" style="display:none;"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btnPrev4">← Kembali</button>
+          <button type="button" class="btn btn-warning" id="btnSaveDraft">
+            💾 Simpan sebagai Draft
+          </button>
+          <button type="button" class="btn btn-primary" id="btnSubmit">
+            📤 Submit untuk Verifikasi
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/input-me.js"></script>
+</body>
+</html>
