@@ -331,10 +331,27 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
       y += rowH;
 
-      // Page break kalau kepanjangan
+     // Page break kalau kepanjangan
       if (y > pageH - 50) {
         doc.addPage('a4', 'landscape');
         y = 15;
+
+        // Re-draw header tabel di halaman baru
+        doc.setFillColor(22, 163, 74);
+        doc.setTextColor(255, 255, 255);
+        doc.rect(margin, y, pageW - margin * 2, 7, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.text('NO', colNo, y + 5);
+        doc.text('TAHAPAN', colTahap, y + 5);
+        doc.text('MONITORING MEDICATION ERROR', colItem, y + 5);
+        gradeKodes.forEach((k, i) => {
+          doc.text(k, gradeStartX + i * 5 + 1.5, y + 5);
+        });
+        y += 7;
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
       }
     });
 
@@ -389,22 +406,37 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   }
 
   // ============ TANDA TANGAN ============
-  y = pageH - 25;
+   // ============ TANDA TANGAN ============
+  // Geser posisi TTD ke bawah konten, tapi minimal 30mm dari bawah
+  const minSignY = pageH - 35;  // batas minimal dari atas halaman untuk TTD
+  const signY = Math.max(y + 10, minSignY);
+  
+  // Kalau signY melebihi tinggi halaman, tambah halaman baru
+  let finalSignY = signY;
+  if (signY > pageH - 25) {
+    doc.addPage('a4', 'landscape');
+    finalSignY = 20;
+  }
+
   const signW = 60;
   const leftX = margin + 20;
   const rightX = pageW - margin - signW - 20;
 
   doc.setFontSize(8);
-  doc.text('Petugas Pelapor,', leftX, y);
-  doc.line(leftX, y + 15, leftX + signW, y + 15);
-  doc.setFont('helvetica', 'bold');
-  doc.text(laporan.petugas?.nama || '-', leftX, y + 20);
   doc.setFont('helvetica', 'normal');
+  
+  // Label
+  doc.text('Petugas Pelapor,', leftX, finalSignY);
+  doc.text('Apoteker PJ / Verifikator,', rightX, finalSignY);
 
-  doc.text('Apoteker PJ / Verifikator,', rightX, y);
-  doc.line(rightX, y + 15, rightX + signW, y + 15);
+  // Garis tanda tangan
+  doc.line(leftX, finalSignY + 18, leftX + signW, finalSignY + 18);
+  doc.line(rightX, finalSignY + 18, rightX + signW, finalSignY + 18);
+
+  // Nama
   doc.setFont('helvetica', 'bold');
-  doc.text(laporan.verifikator?.nama || '(...................)', rightX, y + 20);
+  doc.text(laporan.petugas?.nama || '(...................)', leftX, finalSignY + 23);
+  doc.text(laporan.verifikator?.nama || '(...................)', rightX, finalSignY + 23);
 }
 
 // ============================================================
