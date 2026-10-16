@@ -1,8 +1,7 @@
 // ============================================================
-// LAYOUT HELPER - Sidebar & Topbar reusable
+// LAYOUT HELPER - Sidebar & Topbar reusable (MOBILE OPTIMIZED)
 // ============================================================
 
-/** Daftar menu sidebar */
 const MENU_ITEMS = [
   { href: 'dashboard.html',    icon: '📊', label: 'Dashboard',         roles: ['admin','petugas','pj'] },
   { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] },
@@ -13,13 +12,6 @@ const MENU_ITEMS = [
   { href: 'master-ruangan.html', icon: '🏥', label: 'Master Ruangan', roles: ['admin'] }
 ];
 
-/**
- * Render layout utama (sidebar + topbar) ke dalam halaman.
- * Halaman harus punya:
- *   <div id="app-sidebar"></div>  (opsional)
- *   <div id="app-topbar"></div>   (opsional)
- *   <main id="app-content">...</main>
- */
 async function renderLayout(activePage) {
   const session = await requireAuth();
   if (!session) return;
@@ -32,6 +24,15 @@ async function renderLayout(activePage) {
   }
 
   const activeHref = activePage || location.pathname.split('/').pop();
+
+  // --- SIDEBAR OVERLAY (mobile) ---
+  if (!document.getElementById('sidebarOverlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'sidebarOverlay';
+    overlay.className = 'sidebar-overlay';
+    overlay.addEventListener('click', closeSidebar);
+    document.body.appendChild(overlay);
+  }
 
   // --- SIDEBAR ---
   const sidebarEl = document.getElementById('app-sidebar');
@@ -68,6 +69,7 @@ async function renderLayout(activePage) {
     topbarEl.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
+          <button class="btn-hamburger" id="btnHamburger" aria-label="Menu">☰</button>
           <h2>${document.title.split('|')[0].trim()}</h2>
         </div>
         <div class="topbar-right">
@@ -88,5 +90,55 @@ async function renderLayout(activePage) {
         await logout();
       }
     });
+
+    // Hamburger toggle
+    document.getElementById('btnHamburger').addEventListener('click', toggleSidebar);
   }
+
+  // Close sidebar otomatis kalau link diklik (mobile)
+  sidebarEl?.querySelectorAll('.sidebar-item').forEach(el => {
+    el.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  // Handle ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+
+  // Handle resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      closeSidebar();
+    }
+  });
+}
+
+// ============================================================
+// SIDEBAR TOGGLE (mobile)
+// ============================================================
+function toggleSidebar() {
+  const sidebar = document.getElementById('app-sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar) return;
+
+  const isOpen = sidebar.classList.contains('sidebar-open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('sidebar-open');
+    overlay?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('app-sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar) return;
+
+  sidebar.classList.remove('sidebar-open');
+  overlay?.classList.remove('active');
+  document.body.style.overflow = '';
 }
