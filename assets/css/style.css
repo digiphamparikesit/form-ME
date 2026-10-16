@@ -1107,3 +1107,66 @@ a:hover { color: var(--primary-dark); }
     font-size: 12px;
   }
 }
+/* ============================================================
+   FILTER TABS
+   ============================================================ */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 9px 16px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  border-radius: 99px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all .15s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 2px 6px rgba(22,163,74,.3);
+}
+
+.tab-count {
+  background: rgba(255,255,255,.25);
+  padding: 1px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.tab-btn:not(.active) .tab-count {
+  background: var(--border-light);
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   MODAL LG (untuk detail verifikasi)
+   ============================================================ */
+.modal-box.modal-lg {
+  max-width: 800px;
+}
+
+.modal-body {
+  max-height: 65vh;
+  overflow-y: auto;
+}
