@@ -40,17 +40,37 @@ async function getCurrentProfile() {
   const session = await getSession();
   if (!session) return null;
 
-  const { data, error } = await db
+  // 1. Ambil profile dulu (tanpa nested select)
+  const { data: profile, error } = await db
     .from('profiles')
-    .select('*, ruangan:ruangan_id(id, nama_ruangan)')
+    .select('*')
     .eq('id', session.user.id)
-    .single();
+    .maybeSingle();  // ← pakai maybeSingle() biar tidak error kalau kosong
 
   if (error) {
     console.error('Gagal ambil profile:', error);
     return null;
   }
-  return data;
+
+  if (!profile) {
+    console.warn('Profile tidak ditemukan untuk user:', session.user.id);
+    return null;
+  }
+
+  // 2. Ambil info ruangan secara terpisah (kalau ada)
+  if (profile.ruangan_id) {
+    const { data: ruangan } = await db
+      .from('ruangan')
+      .select('id, nama_ruangan')
+      .eq('id', profile.ruangan_id)
+      .maybeSingle();
+
+    profile.ruangan = ruangan || null;
+  } else {
+    profile.ruangan = null;
+  }
+
+  return profile;
 }
 
 /** Cek apakah user sudah login. Kalau belum, redirect ke login */
