@@ -46,20 +46,19 @@
         <div class="table-wrapper">
           <table class="data-table" id="tabelPetugas">
             <thead>
-              <tr>
-                <th style="width:50px;">No</th>
-                <th>Username</th>
-                <th>Nama Lengkap</th>
-                <th>NIP</th>
-                <th>Profesi</th>
-                <th>Unit</th>
-                <th>Role</th>
-                <th style="width:90px;">Status</th>
-                <th style="width:140px;">Aksi</th>
-              </tr>
-            </thead>
+  <tr>
+    <th style="width:50px;">No</th>
+    <th>Username</th>
+    <th>Nama Lengkap</th>
+    <th>NIP</th>
+    <th>Profesi</th>
+    <th>Role</th>
+    <th style="width:90px;">Status</th>
+    <th style="width:140px;">Aksi</th>
+  </tr>
+</thead>
             <tbody id="tbodyPetugas">
-              <tr><td colspan="9" class="text-center">Memuat data...</td></tr>
+              <tr><td colspan="8" class="text-center">Memuat data...</td></tr>
             </tbody>
           </table>
         </div>
@@ -110,26 +109,16 @@
                  placeholder="contoh: Budi Santoso, S.Farm., Apt." required>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="profesi">Profesi <span class="required">*</span></label>
-            <select id="profesi" class="form-control" required>
-              <option value="">-- Pilih --</option>
-              <option value="Apoteker">Apoteker</option>
-              <option value="TTK">TTK (Tenaga Teknis Kefarmasian)</option>
-              <option value="Perawat">Perawat</option>
-              <option value="Dokter">Dokter</option>
-              <option value="Bidan">Bidan</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="unitId">Unit <span class="required">*</span></label>
-            <select id="unitId" class="form-control" required>
-              <option value="">Memuat unit...</option>
-            </select>
-          </div>
-        </div>
+        <div class="form-group">
+  <label for="profesi">Profesi <span class="required">*</span></label>
+  <select id="profesi" class="form-control" required>
+    <option value="">-- Pilih --</option>
+    <option value="Apoteker">Apoteker</option>
+    <option value="TTK">TTK (Tenaga Teknis Kefarmasian)</option>
+    <option value="Admin Farmasi">Admin Farmasi</option>
+  </select>
+  <small class="form-hint">Semua petugas otomatis terdaftar di Instalasi Farmasi</small>
+</div>
 
         <div class="form-group">
           <label for="role">Role <span class="required">*</span></label>
