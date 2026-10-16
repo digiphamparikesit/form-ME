@@ -8,8 +8,9 @@ const MENU_ITEMS = [
   { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] },
   { href: 'laporan.html',      icon: '📄', label: 'Data Laporan',      roles: ['admin','petugas','pj'] },
   { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj'] },
+  { href: 'cetak-pdf.html',    icon: '🖨️', label: 'Cetak PDF',        roles: ['admin','petugas','pj'] },
   { href: 'master-petugas.html', icon: '👥', label: 'Master Petugas',  roles: ['admin'] },
-  { href: 'master-ruangan.html',  icon: '🏥', label: 'Master Ruangan',       roles: ['admin'] }
+  { href: 'master-ruangan.html', icon: '🏥', label: 'Master Ruangan', roles: ['admin'] }
 ];
 
 /**
