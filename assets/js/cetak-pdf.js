@@ -484,14 +484,14 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   }
 
   // ============ TANDA TANGAN ============
-  // Geser TTD ke bawah konten, tapi minimal 35mm dari bawah
-  const minSignY = pageH - 35;
-  let finalSignY = Math.max(y + 10, minSignY);
+  // ============ TANDA TANGAN ============
+  // TTD langsung 15mm di bawah teks terakhir (tidak dipaksa ke bawah)
+  let finalSignY = y + 15;
 
-  // Kalau signY melebihi tinggi halaman, tambah halaman baru
-  if (finalSignY > pageH - 25) {
+  // Kalau TTD + nama kepanjangan, pindah ke halaman baru
+  if (finalSignY + 30 > pageH - 15) {
     doc.addPage('a4', 'landscape');
-    finalSignY = 20;
+    finalSignY = 25;
   }
 
   const signW = 60;
@@ -506,8 +506,12 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   doc.text('Apoteker PJ / Verifikator,', rightX, finalSignY);
 
   // Garis tanda tangan
+  doc.setDrawColor(22, 163, 74);    // hijau
+  doc.setLineWidth(0.5);
   doc.line(leftX, finalSignY + 18, leftX + signW, finalSignY + 18);
   doc.line(rightX, finalSignY + 18, rightX + signW, finalSignY + 18);
+  doc.setDrawColor(0, 0, 0);        // reset
+  doc.setLineWidth(0.2);
 
   // Nama
   doc.setFont('helvetica', 'bold');
