@@ -245,14 +245,14 @@ function renderRuanganChart() {
 function renderTrenChart() {
   const container = document.getElementById('trenChart');
 
-  // Ambil 12 bulan terakhir dari sekarang
+  // Ambil 12 bulan terakhir
   const bulanArr = [];
   const now = new Date();
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     bulanArr.push({
       key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
-      label: d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+      label: d.toLocaleDateString('id-ID', { month: 'short' })
     });
   }
 
@@ -266,16 +266,18 @@ function renderTrenChart() {
 
   const maxCount = Math.max(...Object.values(counts), 1);
 
-  // Bar chart vertikal
+  // Tinggi minimum 15% biar tetap kelihatan
   container.innerHTML = `
     <div class="tren-chart">
       ${bulanArr.map(b => {
         const count = counts[b.key];
-        const height = count > 0 ? (count / maxCount) * 100 : 2;
+        const heightPercent = count > 0 
+          ? Math.max((count / maxCount) * 85, 15)  // minimal 15% kalau ada data
+          : 3;  // 3% kalau 0 (bar kecil tetap tampil)
         return `
           <div class="tren-bar-wrapper" title="${b.label}: ${count} laporan">
-            <div class="tren-value">${count || ''}</div>
-            <div class="tren-bar" style="height:${height}%"></div>
+            <div class="tren-value">${count > 0 ? count : ''}</div>
+            <div class="tren-bar" style="height:${heightPercent}%"></div>
             <div class="tren-label">${b.label}</div>
           </div>
         `;
