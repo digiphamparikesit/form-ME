@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cetak PDF | Monitoring ME - RSUD AM Parikesit</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/logo-rsud.png">
+</head>
+<body>
+
+  <div class="app-layout">
+    <div id="app-sidebar"></div>
+    <div id="app-topbar"></div>
+
+    <main id="app-content">
+
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">Cetak Laporan PDF</h3>
+          <p class="page-subtitle">Generate PDF landscape dari laporan ME</p>
+        </div>
+      </div>
+
+      <!-- Pilih Laporan -->
+      <div class="card">
+        <h3 class="card-title">📄 Pilih Laporan</h3>
+        <div class="filter-bar">
+          <div class="form-group" style="margin:0; flex:1;">
+            <label>Laporan</label>
+            <select id="pilihLaporan" class="form-control">
+              <option value="">-- Pilih Laporan --</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" id="btnCetakSatu" disabled>
+              🖨️ Cetak PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atau Cetak Banyak -->
+      <div class="card">
+        <h3 class="card-title">📚 Cetak Banyak Laporan</h3>
+        <p class="text-muted" style="margin-bottom:12px; font-size:13px;">
+          Cetak semua laporan dalam rentang tanggal tertentu (1 laporan per halaman).
+        </p>
+        <div class="filter-bar">
+          <div class="form-group" style="margin:0;">
+            <label>Dari Tanggal</label>
+            <input type="date" id="batchDari" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Sampai Tanggal</label>
+            <input type="date" id="batchSampai" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Status</label>
+            <select id="batchStatus" class="form-control">
+              <option value="">Semua Status</option>
+              <option value="draft">Draft</option>
+              <option value="pending">Menunggu Verifikasi</option>
+              <option value="verified">Terverifikasi</option>
+              <option value="rejected">Ditolak</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>&nbsp;</label>
+            <button class="btn btn-success" id="btnCetakBatch">
+              📚 Cetak Batch PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Info -->
+      <div class="card" id="previewCard" style="display:none;">
+        <h3 class="card-title">👁️ Preview</h3>
+        <div id="previewInfo"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/cetak-pdf.js"></script>
+</body>
+</html>
