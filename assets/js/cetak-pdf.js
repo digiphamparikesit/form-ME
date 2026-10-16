@@ -348,16 +348,23 @@ async function generatePDFPage(doc, data, addNewPage = true) {
       doc.setFontSize(7.5);
       doc.text(itemText, colItem, y + 3.5);
 
-      // Tanda centang di kolom grade
+       // Tanda centang di kolom grade (gambar manual pakai 2 garis)
       if (isChecked && laporan.grade) {
         const gradeIdx = gradeKodes.indexOf(laporan.grade);
         if (gradeIdx >= 0) {
           const cx = gradeStartX + (gradeIdx * gradeCellW) + (gradeCellW / 2);
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.text('✓', cx, y + 3.8, { align: 'center' });
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7.5);
+          const cy = y + 2.5;
+          
+          doc.setDrawColor(22, 163, 74);   // hijau
+          doc.setLineWidth(0.6);
+          
+          // Garis 1: kiri-bawah → tengah
+          doc.line(cx - 1.5, cy, cx - 0.4, cy + 1.5);
+          // Garis 2: tengah → kanan-atas
+          doc.line(cx - 0.4, cy + 1.5, cx + 2, cy - 0.8);
+          
+          doc.setDrawColor(0, 0, 0);        // reset warna
+          doc.setLineWidth(0.2);
         }
       }
 
