@@ -261,21 +261,44 @@ async function generatePDFPage(doc, data, addNewPage = true) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
 
-  // Kolom header
+  // ===== KALKULASI LEBAR KOLOM =====
+  const gradeKodes = ['A','B','C','D','E','F','G','H','I'];
+  const gradeCellW = 6;                                 // lebar 1 kolom grade
+  const gradeTotalW = gradeKodes.length * gradeCellW;   // 9 × 6 = 54mm
+  const gradeStartX = pageW - margin - gradeTotalW;     // titik mulai kolom A
+  const itemColEndX = gradeStartX - 2;                  // batas kanan kolom item
+
+  // Posisi kolom
   const colNo = margin + 2;
   const colTahap = margin + 12;
   const colItem = margin + 48;
-  const gradeStartX = pageW - margin - 45; // 9 kolom grade * 5mm
 
+  // ===== HEADER BAR =====
+  doc.setFillColor(22, 163, 74);
+  doc.setTextColor(255, 255, 255);
+  doc.rect(margin, y, pageW - margin * 2, 7, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+
+  // Label utama
   doc.text('NO', colNo, y + 5);
   doc.text('TAHAPAN', colTahap, y + 5);
   doc.text('MONITORING MEDICATION ERROR', colItem, y + 5);
 
-  // Grade headers A-I
-  const gradeKodes = ['A','B','C','D','E','F','G','H','I'];
+  // Grade headers (center-align di tiap cell)
   gradeKodes.forEach((k, i) => {
-    doc.text(k, gradeStartX + i * 5 + 1.5, y + 5);
+    const centerX = gradeStartX + (i * gradeCellW) + (gradeCellW / 2);
+    doc.text(k, centerX, y + 5, { align: 'center' });
   });
+
+  // Garis pemisah vertical antar kolom grade (garis putih tipis)
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.3);
+  for (let i = 0; i <= gradeKodes.length; i++) {
+    const xLine = gradeStartX + (i * gradeCellW);
+    doc.line(xLine, y, xLine, y + 7);
+  }
 
   y += 7;
 
@@ -303,35 +326,39 @@ async function generatePDFPage(doc, data, addNewPage = true) {
 
     // Item rows
     tahapItems.forEach(item => {
-      // Cek apakah item ini dipilih di laporan ini
       const detailItem = detail.find(d => d.item && d.item.id === item.id);
       const isChecked = !!detailItem;
 
-      // Highlight kalau checked
+      // Highlight baris kalau item dicentang
       if (isChecked) {
         doc.setFillColor(220, 252, 231);
         doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
       }
 
       // Item name (wrap kalau panjang)
-      const itemText = item.nama_item.length > 60
-        ? item.nama_item.substring(0, 60) + '...'
+      const itemText = item.nama_item.length > 70
+        ? item.nama_item.substring(0, 70) + '...'
         : item.nama_item;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
       doc.text(itemText, colItem, y + 3.5);
 
-      // Grade checkmark
+      // Grade checkmark (center-align di kolom grade)
       if (isChecked && laporan.grade) {
         const gradeIdx = gradeKodes.indexOf(laporan.grade);
         if (gradeIdx >= 0) {
+          const centerX = gradeStartX + (gradeIdx * gradeCellW) + (gradeCellW / 2);
           doc.setFont('helvetica', 'bold');
-          doc.text('✓', gradeStartX + gradeIdx * 5 + 1.5, y + 3.5);
+          doc.setFontSize(9);
+          doc.text('✓', centerX, y + 3.8, { align: 'center' });
           doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7.5);
         }
       }
 
       y += rowH;
 
-     // Page break kalau kepanjangan
+      // Page break kalau kepanjangan
       if (y > pageH - 50) {
         doc.addPage('a4', 'landscape');
         y = 15;
@@ -346,7 +373,8 @@ async function generatePDFPage(doc, data, addNewPage = true) {
         doc.text('TAHAPAN', colTahap, y + 5);
         doc.text('MONITORING MEDICATION ERROR', colItem, y + 5);
         gradeKodes.forEach((k, i) => {
-          doc.text(k, gradeStartX + i * 5 + 1.5, y + 5);
+          const centerX = gradeStartX + (i * gradeCellW) + (gradeCellW / 2);
+          doc.text(k, centerX, y + 5, { align: 'center' });
         });
         y += 7;
         doc.setTextColor(0, 0, 0);
@@ -358,10 +386,12 @@ async function generatePDFPage(doc, data, addNewPage = true) {
     rowNum++;
   });
 
-  // Grid vertical lines untuk tabel
-  doc.setDrawColor(200, 200, 200);
-  doc.setLineWidth(0.1);
-  doc.line(colTahap - 2, y - (rowNum > 1 ? 100 : 0), colTahap - 2, y); // sementara
+  // Grid: garis pemisah kolom vertical
+  const tableTop = y - (totalRowsRendered * rowH); // ganti sesuai perhitungan Anda
+  // Grid horizontal saja (opsional: garis antara header & data)
+  doc.setDrawColor(22, 163, 74);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y - (rowNum > 0 ? 2 : 0), pageW - margin, y - (rowNum > 0 ? 2 : 0));
 
   y += 5;
 
