@@ -42,7 +42,7 @@ async function getCurrentProfile() {
 
   const { data, error } = await db
     .from('profiles')
-    .select('*, unit:unit_id(id, nama_unit)')
+    .select('*, ruangan:ruangan_id(id, nama_ruangan)')
     .eq('id', session.user.id)
     .single();
 
