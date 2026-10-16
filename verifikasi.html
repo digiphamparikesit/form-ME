@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi | Monitoring ME - RSUD AM Parikesit</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/logo-rsud.png">
+</head>
+<body>
+
+  <div class="app-layout">
+    <div id="app-sidebar"></div>
+    <div id="app-topbar"></div>
+
+    <main id="app-content">
+
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">Verifikasi Laporan ME</h3>
+          <p class="page-subtitle">Tinjau & verifikasi laporan Medication Error</p>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" id="filterTabs">
+        <button class="tab-btn active" data-status="pending">
+          🕐 Menunggu Verifikasi <span class="tab-count" id="countPending">0</span>
+        </button>
+        <button class="tab-btn" data-status="verified">
+          ✅ Terverifikasi <span class="tab-count" id="countVerified">0</span>
+        </button>
+        <button class="tab-btn" data-status="rejected">
+          ❌ Ditolak <span class="tab-count" id="countRejected">0</span>
+        </button>
+        <button class="tab-btn" data-status="all">
+          📋 Semua <span class="tab-count" id="countAll">0</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No. Laporan</th>
+                <th>Tgl Kejadian</th>
+                <th>Pasien</th>
+                <th>Ruangan</th>
+                <th>Grade</th>
+                <th>Status</th>
+                <th>Pelapor</th>
+                <th style="width:100px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyVerifikasi">
+              <tr><td colspan="8" class="text-center">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ============================================================
+       MODAL: Detail & Verifikasi
+       ============================================================ -->
+  <div class="modal-overlay" id="modalDetail" style="display:none;">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 id="detailTitle">Detail Laporan</h3>
+        <button class="modal-close" id="btnCloseDetail">&times;</button>
+      </div>
+
+      <div class="modal-body" id="detailBody">
+        <!-- Diisi oleh JS -->
+      </div>
+
+      <div class="modal-footer" id="detailFooter">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/verifikasi.js"></script>
+</body>
+</html>
