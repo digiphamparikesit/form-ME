@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Monitoring Medication Error | RSUD AM Parikesit</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/logo-rsud.png">
+</head>
+<body class="login-page">
+
+  <div class="login-container">
+    <div class="login-card">
+      
+      <!-- Logo & Judul -->
+      <div class="login-header">
+        <img src="assets/img/logo-rsud.png" alt="Logo RSUD AM Parikesit" class="login-logo" onerror="this.style.display='none'">
+        <h1>RSUD AM PARIKESIT</h1>
+        <p class="login-subtitle">Sistem Monitoring Medication Error</p>
+      </div>
+
+      <!-- Form Login -->
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="email">Email / Username</label>
+          <input 
+            type="text" 
+            id="email" 
+            name="email" 
+            placeholder="contoh: admin@rsamp.go.id atau admin" 
+            required 
+            autocomplete="username"
+          >
+          <small class="form-hint">Bisa pakai username (mis. <b>admin</b>) atau email lengkap</small>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Masukkan password" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+
+        <div id="loginError" class="alert alert-danger" style="display:none;"></div>
+        <div id="loginSuccess" class="alert alert-success" style="display:none;"></div>
+
+        <button type="submit" id="btnLogin" class="btn btn-primary btn-block">
+          <span id="btnLoginText">Masuk</span>
+          <span id="btnLoginSpinner" class="spinner" style="display:none;"></span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>&copy; 2026 RSUD AM Parikesit — Instalasi Farmasi</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Supabase SDK via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>
