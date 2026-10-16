@@ -1208,4 +1208,135 @@ a:hover { color: var(--primary-dark); }
   /* Content */
   #app-content { padding: 12px; }
 
-  /* Card
+  /* Card */
+  .card { padding: 14px; margin-bottom: 14px; }
+  .card-title { font-size: 15px; margin-bottom: 12px; }
+
+  /* Page header */
+  .page-header { flex-direction: column; align-items: stretch; gap: 10px; }
+  .page-title { font-size: 18px; }
+  .page-actions { width: 100%; }
+  .page-actions .form-control { flex: 1; min-width: 0; }
+  .page-actions .btn { flex-shrink: 0; }
+
+  /* Form */
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions .btn { width: 100%; }
+
+  /* Stat */
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stat-card { padding: 14px; }
+  .stat-card .stat-value { font-size: 22px; }
+  .stat-card .stat-label { font-size: 11px; }
+
+  /* Table */
+  .table-wrapper { margin: 0 -14px; padding: 0 14px; }
+  .data-table { min-width: 600px; font-size: 12px; }
+  .data-table th { padding: 10px 8px; font-size: 11px; }
+  .data-table td { padding: 10px 8px; }
+
+  /* Modal full-screen */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal-box {
+    max-width: 100%;
+    max-height: 95dvh;
+    border-radius: 16px 16px 0 0;
+    animation: slideUpModal .25s ease;
+  }
+  .modal-box.modal-sm,
+  .modal-box.modal-lg { max-width: 100%; }
+
+  @keyframes slideUpModal {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-footer .btn { width: 100%; }
+
+  /* Toast */
+  .toast {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    max-width: none;
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+
+  /* Filter tabs scroll horizontal */
+  .filter-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    margin: 0 -12px 16px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .tab-btn { flex-shrink: 0; font-size: 12px; padding: 8px 12px; }
+
+  /* Stepper ringkas */
+  .stepper {
+    padding: 12px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+  .step-item { padding: 4px 8px; flex-shrink: 0; }
+  .step-item .step-num { width: 28px; height: 28px; font-size: 12px; }
+  .step-item .step-label { font-size: 11px; }
+  .step-line { max-width: 20px; flex-shrink: 0; }
+
+  /* Item checkbox */
+  .item-group-header { padding: 10px 12px; }
+  .item-group-body { padding: 8px 12px; }
+  .item-lain-input { margin-left: 0; }
+
+  /* Grade grid */
+  .grade-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .grade-option { padding: 8px 10px; min-height: 56px; }
+  .grade-badge { width: 30px; height: 30px; font-size: 14px; }
+  .grade-info strong { font-size: 11px; }
+  .grade-info small { font-size: 9px; }
+
+  /* Review */
+  .review-block { padding: 12px; }
+  .review-table td:first-child { width: 90px; font-size: 12px; }
+
+  /* Bar chart */
+  .bar-row { grid-template-columns: 100px 1fr 40px; font-size: 12px; gap: 6px; }
+  .bar-label small { font-size: 10px; }
+  .bar-track { height: 18px; }
+
+  /* Tren chart - scroll horizontal */
+  .tren-chart {
+    height: 200px;
+    gap: 4px;
+    padding: 15px 4px 0;
+    overflow-x: auto;
+  }
+  .tren-bar-wrapper { min-width: 28px; }
+  .tren-label { font-size: 9px; }
+}
+
+/* ============================================================
+   RESPONSIVE - SMALL MOBILE (≤ 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+
+  .page-actions { flex-direction: column; align-items: stretch; }
+  .page-actions .btn { width: 100%; }
+
+  .grade-grid { grid-template-columns: 1fr; }
+
+  .login-card { padding: 28px 20px 18px; }
+  .login-logo { width: 64px; height: 64px; }
+  .login-header h1 { font-size: 16px; }
+}
