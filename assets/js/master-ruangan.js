@@ -28,7 +28,6 @@ async function loadRuangan() {
     return;
   }
 
-  // Hitung jumlah petugas per ruangan
   const { data: profiles } = await db.from('profiles').select('ruangan_id');
   const countMap = {};
   (profiles || []).forEach(p => {
