@@ -14,24 +14,119 @@
     <div id="app-topbar"></div>
 
     <main id="app-content">
-      <div class="card">
-        <h3 class="card-title">Selamat Datang di Sistem Monitoring Medication Error</h3>
-        <p style="color: var(--text-muted);">
-          Silakan pilih menu di sebelah kiri untuk mulai bekerja.<br>
-          Fitur dashboard statistik akan tersedia di <b>Tahap 6</b>.
-        </p>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">Dashboard</h3>
+          <p class="page-subtitle">Ringkasan statistik Medication Error</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline btn-sm" id="btnQuickBulanIni">📅 Bulan Ini</button>
+          <button class="btn btn-outline btn-sm" id="btnQuickTahunIni">📅 Tahun Ini</button>
+          <button class="btn btn-outline btn-sm" id="btnQuick7Hari">📅 7 Hari Terakhir</button>
+        </div>
       </div>
+
+      <!-- Filter Bar -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="filter-bar">
+          <div class="form-group" style="margin:0;">
+            <label>Tahun</label>
+            <select id="filterTahun" class="form-control">
+              <option value="">Semua Tahun</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Dari Tanggal</label>
+            <input type="date" id="filterDari" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Sampai Tanggal</label>
+            <input type="date" id="filterSampai" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" id="btnApplyFilter">🔍 Terapkan</button>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>&nbsp;</label>
+            <button class="btn btn-outline" id="btnResetFilter">↻ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-grid" id="statCards">
+        <div class="stat-card">
+          <div class="stat-label">Total Laporan</div>
+          <div class="stat-value" id="statTotal">-</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">Draft</div>
+          <div class="stat-value" id="statDraft">-</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Menunggu Verifikasi</div>
+          <div class="stat-value" id="statPending">-</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-label">Terverifikasi</div>
+          <div class="stat-value" id="statVerified">-</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-label">Ditolak</div>
+          <div class="stat-value" id="statRejected">-</div>
+        </div>
+      </div>
+
+      <!-- Grid 2 kolom -->
+      <div class="dashboard-grid">
+
+        <!-- Distribusi Grade -->
+        <div class="card">
+          <h3 class="card-title">🎯 Distribusi Grade</h3>
+          <div id="gradeChart" class="chart-container">
+            <p class="text-muted text-center">Memuat data...</p>
+          </div>
+        </div>
+
+        <!-- Distribusi Tahap -->
+        <div class="card">
+          <h3 class="card-title">📦 Distribusi Tahap Error</h3>
+          <div id="tahapChart" class="chart-container">
+            <p class="text-muted text-center">Memuat data...</p>
+          </div>
+        </div>
+
+        <!-- Top 5 Ruangan -->
+        <div class="card">
+          <h3 class="card-title">🏥 Top 5 Ruangan</h3>
+          <div id="ruanganChart" class="chart-container">
+            <p class="text-muted text-center">Memuat data...</p>
+          </div>
+        </div>
+
+        <!-- Tren Bulanan -->
+        <div class="card">
+          <h3 class="card-title">📈 Tren 12 Bulan Terakhir</h3>
+          <div id="trenChart" class="chart-container">
+            <p class="text-muted text-center">Memuat data...</p>
+          </div>
+        </div>
+
+      </div>
+
     </main>
   </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/utils.js"></script>
   <script src="assets/js/layout.js"></script>
-  <script>
-    // Render layout + proteksi halaman
-    renderLayout('dashboard.html');
-  </script>
+  <script src="assets/js/dashboard.js"></script>
 </body>
 </html>
