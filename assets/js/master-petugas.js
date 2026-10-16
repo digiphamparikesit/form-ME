@@ -1,59 +1,30 @@
 // ============================================================
-// MASTER PETUGAS - CRUD
+// MASTER PETUGAS - CRUD (Khusus Instalasi Farmasi)
 // ============================================================
 
 let allPetugas = [];
-let allUnit = [];
 let deleteTargetId = null;
 
-// ============================================================
-// INIT
-// ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   await renderLayout('master-petugas.html');
-  await requireRole(['admin']); // hanya admin
-  await loadUnitOptions();
+  await requireRole(['admin']);
   await loadPetugas();
   bindEvents();
 });
-
-// ============================================================
-// LOAD DATA
-// ============================================================
-async function loadUnitOptions() {
-  const { data, error } = await db
-    .from('unit')
-    .select('id, nama_unit')
-    .eq('is_active', true)
-    .order('nama_unit');
-
-  if (error) {
-    console.error('Gagal load unit:', error);
-    return;
-  }
-  allUnit = data || [];
-
-  const select = document.getElementById('unitId');
-  select.innerHTML = '<option value="">-- Pilih Unit --</option>' +
-    allUnit.map(u => `<option value="${u.id}">${escapeHtml(u.nama_unit)}</option>`).join('');
-}
 
 async function loadPetugas() {
   showTbodyLoading();
 
   const { data, error } = await db
     .from('profiles')
-    .select(`
-      id, username, nama, nip, profesi, role, is_active, created_at,
-      unit:unit_id(id, nama_unit)
-    `)
+    .select('id, username, nama, nip, profesi, role, is_active, created_at')
     .order('created_at', { ascending: false });
 
   if (error) {
     console.error(error);
     showToast('Gagal memuat data petugas: ' + error.message, 'danger');
     document.getElementById('tbodyPetugas').innerHTML =
-      `<tr><td colspan="9" class="text-center text-danger">Gagal memuat data</td></tr>`;
+      `<tr><td colspan="8" class="text-center text-danger">Gagal memuat data</td></tr>`;
     return;
   }
 
@@ -61,14 +32,11 @@ async function loadPetugas() {
   renderTable(allPetugas);
 }
 
-// ============================================================
-// RENDER TABEL
-// ============================================================
 function renderTable(list) {
   const tbody = document.getElementById('tbodyPetugas');
 
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="text-center">Belum ada data petugas</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data petugas</td></tr>`;
     return;
   }
 
@@ -79,7 +47,6 @@ function renderTable(list) {
       <td><b>${escapeHtml(p.nama)}</b></td>
       <td>${escapeHtml(p.nip || '-')}</td>
       <td>${escapeHtml(p.profesi || '-')}</td>
-      <td>${escapeHtml(p.unit?.nama_unit || '-')}</td>
       <td>
         <span class="badge ${badgeRoleClass(p.role)}">
           ${roleLabel(p.role)}
@@ -97,7 +64,6 @@ function renderTable(list) {
     </tr>
   `).join('');
 
-  // Bind tombol aksi
   tbody.querySelectorAll('.btn-edit').forEach(btn => {
     btn.addEventListener('click', () => openEditModal(btn.dataset.id));
   });
@@ -116,29 +82,18 @@ function badgeRoleClass(role) {
 
 function showTbodyLoading() {
   document.getElementById('tbodyPetugas').innerHTML =
-    `<tr><td colspan="9" class="text-center">Memuat data...</td></tr>`;
+    `<tr><td colspan="8" class="text-center">Memuat data...</td></tr>`;
 }
 
-// ============================================================
-// EVENT BINDING
-// ============================================================
 function bindEvents() {
-  // Tombol tambah
   document.getElementById('btnTambah').addEventListener('click', openCreateModal);
-
-  // Close modal
   document.getElementById('btnCloseModal').addEventListener('click', closeModal);
   document.getElementById('btnCancel').addEventListener('click', closeModal);
   document.getElementById('btnCloseHapus').addEventListener('click', closeDeleteModal);
   document.getElementById('btnCancelHapus').addEventListener('click', closeDeleteModal);
-
-  // Submit form
   document.getElementById('formPetugas').addEventListener('submit', handleSubmit);
-
-  // Konfirmasi hapus
   document.getElementById('btnConfirmHapus').addEventListener('click', confirmDelete);
 
-  // Search
   document.getElementById('searchInput').addEventListener('input', (e) => {
     const q = e.target.value.toLowerCase().trim();
     if (!q) return renderTable(allPetugas);
@@ -150,7 +105,6 @@ function bindEvents() {
     renderTable(filtered);
   });
 
-  // Close modal kalau klik overlay
   document.getElementById('modalPetugas').addEventListener('click', (e) => {
     if (e.target.id === 'modalPetugas') closeModal();
   });
@@ -159,9 +113,6 @@ function bindEvents() {
   });
 }
 
-// ============================================================
-// MODAL: CREATE / EDIT
-// ============================================================
 function openCreateModal() {
   document.getElementById('modalTitle').textContent = 'Tambah Petugas';
   document.getElementById('editMode').value = 'create';
@@ -172,7 +123,6 @@ function openCreateModal() {
   document.getElementById('uid').required = true;
   document.getElementById('username').disabled = false;
   document.getElementById('formError').style.display = 'none';
-
   document.getElementById('modalPetugas').style.display = 'flex';
 }
 
@@ -187,11 +137,10 @@ function openEditModal(id) {
   document.getElementById('uid').required = false;
 
   document.getElementById('username').value = p.username || '';
-  document.getElementById('username').disabled = true; // username tidak bisa diubah
+  document.getElementById('username').disabled = true;
   document.getElementById('nama').value = p.nama || '';
   document.getElementById('nip').value = p.nip || '';
   document.getElementById('profesi').value = p.profesi || '';
-  document.getElementById('unitId').value = p.unit?.id || '';
   document.getElementById('role').value = p.role || 'petugas';
   document.getElementById('isActive').checked = p.is_active === true;
 
@@ -203,9 +152,6 @@ function closeModal() {
   document.getElementById('modalPetugas').style.display = 'none';
 }
 
-// ============================================================
-// SUBMIT FORM (CREATE / UPDATE)
-// ============================================================
 async function handleSubmit(e) {
   e.preventDefault();
   const mode = document.getElementById('editMode').value;
@@ -223,15 +169,23 @@ async function handleSubmit(e) {
       nama: document.getElementById('nama').value.trim(),
       nip: document.getElementById('nip').value.trim() || null,
       profesi: document.getElementById('profesi').value,
-      unit_id: parseInt(document.getElementById('unitId').value) || null,
       role: document.getElementById('role').value,
       is_active: document.getElementById('isActive').checked
     };
 
-    // Validasi
     if (!payload.nama) throw new Error('Nama wajib diisi');
     if (!payload.profesi) throw new Error('Profesi wajib dipilih');
-    if (!payload.unit_id) throw new Error('Unit wajib dipilih');
+
+    // Set ruangan otomatis = "Farmasi Rawat Inap"
+    const { data: defaultRuangan } = await db
+      .from('ruangan')
+      .select('id')
+      .eq('nama_ruangan', 'Farmasi Rawat Inap')
+      .maybeSingle();
+
+    if (defaultRuangan) {
+      payload.ruangan_id = defaultRuangan.id;
+    }
 
     if (mode === 'create') {
       const uid = document.getElementById('uid').value.trim();
@@ -245,12 +199,12 @@ async function handleSubmit(e) {
       if (error) throw error;
 
       showToast('✅ Petugas berhasil ditambahkan', 'success');
-
     } else {
-      // Edit: username tidak diubah
       delete payload.username;
 
-      const { error } = await db.from('profiles').update(payload).eq('id', document.getElementById('editId').value);
+      const { error } = await db.from('profiles')
+        .update(payload)
+        .eq('id', document.getElementById('editId').value);
       if (error) throw error;
 
       showToast('✅ Petugas berhasil diperbarui', 'success');
@@ -258,7 +212,6 @@ async function handleSubmit(e) {
 
     closeModal();
     await loadPetugas();
-
   } catch (err) {
     console.error(err);
     errBox.textContent = err.message || 'Gagal menyimpan data';
@@ -269,9 +222,6 @@ async function handleSubmit(e) {
   }
 }
 
-// ============================================================
-// DELETE
-// ============================================================
 function openDeleteModal(id, nama) {
   deleteTargetId = id;
   document.getElementById('hapusNama').textContent = nama;
@@ -297,7 +247,6 @@ async function confirmDelete() {
     showToast('✅ Petugas berhasil dihapus', 'success');
     closeDeleteModal();
     await loadPetugas();
-
   } catch (err) {
     console.error(err);
     showToast('Gagal menghapus: ' + err.message, 'danger');
@@ -307,9 +256,6 @@ async function confirmDelete() {
   }
 }
 
-// ============================================================
-// TOAST
-// ============================================================
 function showToast(msg, type = 'info') {
   const t = document.getElementById('toast');
   t.textContent = msg;
