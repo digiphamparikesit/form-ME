@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master Unit | Monitoring ME - RSUD AM Parikesit</title>
+  <title>Master Ruangan | Monitoring ME - RSUD AM Parikesit</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" href="assets/img/logo-rsud.png">
 </head>
@@ -15,34 +15,32 @@
 
     <main id="app-content">
 
-      <!-- Header aksi -->
       <div class="page-header">
         <div>
-          <h3 class="page-title">Master Unit</h3>
-          <p class="page-subtitle">Kelola daftar unit / depo di RSUD AM Parikesit</p>
+          <h3 class="page-title">Master Ruangan</h3>
+          <p class="page-subtitle">Kelola daftar ruangan tempat kejadian ME</p>
         </div>
         <div class="page-actions">
-          <input type="text" id="searchInput" class="form-control" placeholder="🔍 Cari unit...">
+          <input type="text" id="searchInput" class="form-control" placeholder="🔍 Cari ruangan...">
           <button class="btn btn-primary" id="btnTambah">
-            <span>➕</span> Tambah Unit
+            <span>➕</span> Tambah Ruangan
           </button>
         </div>
       </div>
 
-      <!-- Tabel Unit -->
       <div class="card">
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
               <tr>
                 <th style="width:50px;">No</th>
-                <th>Nama Unit</th>
+                <th>Nama Ruangan</th>
                 <th style="width:150px;">Jumlah Petugas</th>
                 <th style="width:100px;">Status</th>
                 <th style="width:140px;">Aksi</th>
               </tr>
             </thead>
-            <tbody id="tbodyUnit">
+            <tbody id="tbodyRuangan">
               <tr><td colspan="5" class="text-center">Memuat data...</td></tr>
             </tbody>
           </table>
@@ -52,26 +50,23 @@
     </main>
   </div>
 
-  <!-- ============================================================
-       MODAL: Tambah/Edit Unit
-       ============================================================ -->
-  <div class="modal-overlay" id="modalUnit" style="display:none;">
+  <!-- MODAL: Tambah/Edit Ruangan -->
+  <div class="modal-overlay" id="modalRuangan" style="display:none;">
     <div class="modal-box modal-sm">
       <div class="modal-header">
-        <h3 id="modalTitle">Tambah Unit</h3>
+        <h3 id="modalTitle">Tambah Ruangan</h3>
         <button class="modal-close" id="btnCloseModal">&times;</button>
       </div>
 
-      <form id="formUnit" class="modal-body">
+      <form id="formRuangan" class="modal-body">
         <input type="hidden" id="editId" value="">
         <input type="hidden" id="editMode" value="create">
 
         <div class="form-group">
-          <label for="namaUnit">Nama Unit <span class="required">*</span></label>
-          <input type="text" id="namaUnit" class="form-control"
-                 placeholder="contoh: Instalasi Farmasi" required
+          <label for="namaRuangan">Nama Ruangan <span class="required">*</span></label>
+          <input type="text" id="namaRuangan" class="form-control"
+                 placeholder="contoh: Ruang Rawat Inap Melati" required
                  maxlength="100">
-          <small class="form-hint">Maksimal 100 karakter</small>
         </div>
 
         <div class="form-group">
@@ -86,16 +81,14 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" id="btnCancel">Batal</button>
-        <button type="submit" form="formUnit" class="btn btn-primary" id="btnSave">
+        <button type="submit" form="formRuangan" class="btn btn-primary" id="btnSave">
           <span id="btnSaveText">Simpan</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================
-       MODAL: Konfirmasi Hapus
-       ============================================================ -->
+  <!-- MODAL: Konfirmasi Hapus -->
   <div class="modal-overlay" id="modalHapus" style="display:none;">
     <div class="modal-box modal-sm">
       <div class="modal-header">
@@ -103,9 +96,9 @@
         <button class="modal-close" id="btnCloseHapus">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Yakin ingin menghapus unit <b id="hapusNama"></b>?</p>
+        <p>Yakin ingin menghapus ruangan <b id="hapusNama"></b>?</p>
         <p class="text-muted" style="font-size:12px;">
-          Unit yang masih dipakai petugas tidak bisa dihapus.
+          Ruangan yang masih dipakai petugas tidak bisa dihapus.
         </p>
       </div>
       <div class="modal-footer">
@@ -115,7 +108,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast" style="display:none;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
@@ -123,6 +115,6 @@
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/utils.js"></script>
   <script src="assets/js/layout.js"></script>
-  <script src="assets/js/master-unit.js"></script>
+  <script src="assets/js/master-ruangan.js"></script>
 </body>
 </html>
