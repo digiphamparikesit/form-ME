@@ -77,11 +77,11 @@
     .print-only { display: none; }
     
     /* =========================================
-       PENGATURAN KHUSUS PRINT / PDF (FIX)
+       PENGATURAN KHUSUS PRINT / PDF (FIX KETEBALAN GARIS)
        ========================================= */
     @page {
-      size: A4 landscape; /* Paksa kertas jadi landscape */
-      margin: 10mm;       /* Margin kecil agar tabel lebar muat */
+      size: A4 landscape; 
+      margin: 10mm;       
     }
 
     @media print {
@@ -104,20 +104,28 @@
       .matrix-table { 
         width: 100% !important; 
         min-width: 100% !important;
-        font-size: 8px !important; /* Perkecil font agar 26 kolom muat */
-        border: 2px solid #000 !important; 
+        font-size: 10px !important; /* Sedikit diperbesar */
+        border-collapse: collapse !important; 
+        border: 2px solid #000 !important; /* Garis luar tebal */
       }
       
+      /* PERBAIKAN: Pertebal garis dalam tabel */
       .matrix-table th, .matrix-table td { 
         padding: 4px 2px !important; 
-        border: 1px solid #000 !important;
+        border: 1.5px solid #000 !important; /* 1.5px lebih tegas di PDF */
       }
       
-      /* MATIKAN STICKY SAAT PRINT AGAR KOLOM KIRI & ATAS TIDAK TERPOTONG */
-      .matrix-table th { position: static !important; box-shadow: none !important; }
-      .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) { position: static !important; }
+      /* Garis khusus untuk bagian luar (kiri dan atas) */
+      .matrix-table th { 
+        position: static !important; 
+        border-top: 2px solid #000 !important;
+      }
+      .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) { 
+        position: static !important; 
+        border-left: 2px solid #000 !important;
+      }
       
-      /* Paksa warna cetak */
+      /* Paksa warna cetak kuning */
       .matrix-table th, .matrix-table th:nth-child(2) {
         background-color: #FBBF24 !important;
         color: #78350F !important;
@@ -127,7 +135,6 @@
       .print-only h2 { font-size: 18px; }
       .print-only h3 { font-size: 16px; }
       
-      /* Pastikan header tabel berulang di halaman 2 */
       .matrix-table thead { display: table-header-group; }
       .matrix-table tr { page-break-inside: avoid; }
     }
