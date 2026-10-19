@@ -191,8 +191,9 @@ async function openDetail(id) {
     // ==========================================
     let footerHtml = `<button type="button" class="btn btn-outline" onclick="closeDetail()">Tutup</button>`;
     
-    // Tampilkan tombol Edit JIKA statusnya Draft atau Ditolak
-    if (d.status === 'draft' || d.status === 'rejected') {
+    // Tampilkan tombol Edit JIKA statusnya Draft, Ditolak, ATAU yang login adalah Admin
+    const isAdmin = currentProfile.role === 'admin';
+    if (d.status === 'draft' || d.status === 'rejected' || isAdmin) {
       footerHtml += `<a href="input-me.html?edit=${d.id}" class="btn btn-warning" style="margin-left:8px;">✏️ Edit Laporan</a>`;
     }
     
