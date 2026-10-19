@@ -14,7 +14,7 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
       margin-bottom: 20px;
-      padding-top: 2px; /* Mencegah garis atas terpotong saat di-scroll */
+      padding-top: 2px;
     }
     
     .matrix-table {
@@ -22,7 +22,7 @@
       font-size: 11px;
       width: 100%;
       min-width: 1200px;
-      border: 2px solid #000 !important; /* Garis luar tabel tebal */
+      border: 2px solid #000 !important; /* Bingkai luar tebal */
     }
     
     /* GARIS TABEL HITAM */
@@ -41,7 +41,7 @@
       position: sticky;
       top: 0;
       z-index: 5;
-      /* Paksa border atas muncul di mode sticky */
+      /* Trik memunculkan garis atas pada header sticky */
       box-shadow: inset 0 2px 0 0 #000, inset 0 -1px 0 0 #000; 
     }
     
@@ -71,29 +71,49 @@
     .matrix-table th:nth-child(2) {
       background-color: #FBBF24 !important;
       z-index: 6;
-      /* Garis luar kiri tebal untuk kolom sticky */
       box-shadow: inset 2px 0 0 0 #000, inset 0 2px 0 0 #000, inset 0 -1px 0 0 #000;
     }
     
     .print-only { display: none; }
     
-    /* PENGATURAN KHUSUS PRINT / PDF */
+    /* =========================================
+       PENGATURAN KHUSUS PRINT / PDF (FIX)
+       ========================================= */
+    @page {
+      size: A4 landscape; /* Paksa kertas jadi landscape */
+      margin: 10mm;       /* Margin kecil agar tabel lebar muat */
+    }
+
     @media print {
-      body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body { 
+        background: white; 
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact; 
+      }
       .app-layout { display: block; }
       #app-sidebar, #app-topbar, .page-header, .filter-bar, .btn { display: none !important; }
       #app-content { padding: 0; }
-      .matrix-wrapper { box-shadow: none; overflow: visible; padding: 0; }
+      
+      .matrix-wrapper { 
+        box-shadow: none; 
+        overflow: visible; 
+        padding: 0; 
+        margin: 0;
+      }
       
       .matrix-table { 
-        min-width: 100%; 
-        font-size: 9px; 
+        width: 100% !important; 
+        min-width: 100% !important;
+        font-size: 8px !important; /* Perkecil font agar 26 kolom muat */
         border: 2px solid #000 !important; 
       }
       
-      .matrix-table th, .matrix-table td { padding: 4px; }
+      .matrix-table th, .matrix-table td { 
+        padding: 4px 2px !important; 
+        border: 1px solid #000 !important;
+      }
       
-      /* MATIKAN STICKY SAAT PRINT AGAR GARIS ATAS TIDAK HILANG */
+      /* MATIKAN STICKY SAAT PRINT AGAR KOLOM KIRI & ATAS TIDAK TERPOTONG */
       .matrix-table th { position: static !important; box-shadow: none !important; }
       .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) { position: static !important; }
       
@@ -103,12 +123,11 @@
         color: #78350F !important;
       }
       
-      /* Garis tegas saat print */
-      .matrix-table th, .matrix-table td {
-        border: 1px solid #000 !important;
-      }
+      .print-only { display: block; text-align: center; margin-bottom: 15px; }
+      .print-only h2 { font-size: 18px; }
+      .print-only h3 { font-size: 16px; }
       
-      .print-only { display: block; text-align: center; margin-bottom: 20px; }
+      /* Pastikan header tabel berulang di halaman 2 */
       .matrix-table thead { display: table-header-group; }
       .matrix-table tr { page-break-inside: avoid; }
     }
