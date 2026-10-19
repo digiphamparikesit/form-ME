@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Bulanan | Monitoring ME - RSUD AM Parikesit</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/img/logo-rsud.png">
+  <style>
+    /* CSS Khusus untuk Matriks Laporan Bulanan */
+    .matrix-wrapper {
+      overflow-x: auto;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+    .matrix-table {
+      border-collapse: collapse;
+      font-size: 11px;
+      width: 100%;
+      min-width: 1200px; /* Agar bisa di-scroll di HP */
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--border);
+      padding: 4px 6px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .matrix-table th {
+      background: #FBBF24; /* Kuning lembut sesuai request PDF */
+      color: #78350F;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .matrix-table td.text-left {
+      text-align: left;
+    }
+    .matrix-table .tahap-header {
+      background: #FFFBEB;
+      color: #78350F;
+      font-weight: bold;
+      text-align: left;
+    }
+    .matrix-table .check {
+      color: #16A34A;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    /* Sticky kolom pasien */
+    .matrix-table th:nth-child(1), .matrix-table td:nth-child(1) { width: 30px; }
+    .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) {
+      position: sticky;
+      left: 0;
+      background: var(--white);
+      z-index: 4;
+      width: 150px;
+      min-width: 150px;
+      text-align: left;
+      border-right: 2px solid var(--border);
+    }
+    .matrix-table th:nth-child(2) {
+      background: #FBBF24;
+      z-index: 6;
+    }
+    .print-only { display: none; }
+    
+    @media print {
+      body { background: white; }
+      .app-layout { display: block; }
+      #app-sidebar, #app-topbar, .page-header, .filter-bar, .btn { display: none !important; }
+      #app-content { padding: 0; }
+      .matrix-wrapper { box-shadow: none; overflow: visible; }
+      .matrix-table { min-width: 100%; font-size: 9px; }
+      .matrix-table th, .matrix-table td { padding: 2px; }
+      .print-only { display: block; text-align: center; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <div id="app-sidebar"></div>
+    <div id="app-topbar"></div>
+
+    <main id="app-content">
+
+      <!-- Header Halaman -->
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">Laporan Bulanan ME</h3>
+          <p class="page-subtitle">Rekapitulasi matriks kejadian per pasien</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline" onclick="window.print()">🖨️ Cetak / PDF</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="card">
+        <div class="filter-bar">
+          <div class="form-group" style="margin:0;">
+            <label>Dari Tanggal</label>
+            <input type="date" id="filterDari" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Sampai Tanggal</label>
+            <input type="date" id="filterSampai" class="form-control">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Ruangan</label>
+            <select id="filterRuangan" class="form-control">
+              <option value="">Semua Ruangan</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" id="btnTampilkan">🔍 Tampilkan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Area Preview -->
+      <div id="printArea">
+        
+        <!-- Header cetak (muncul hanya saat diprint) -->
+        <div class="print-only">
+          <h2 style="margin:0;">LAPORAN BULANAN MEDICATION ERROR</h2>
+          <h3 style="margin:5px 0;">RSUD AM PARIKESIT</h3>
+          <p id="printPeriode" style="margin:0; font-size:12px;"></p>
+        </div>
+
+        <div class="matrix-wrapper">
+          <table class="matrix-table" id="matrixTable">
+            <thead id="matrixHead">
+              <!-- Header di-generate oleh JS -->
+              <tr><th colspan="3">Memuat data...</th></tr>
+            </thead>
+            <tbody id="matrixBody">
+              <!-- Body di-generate oleh JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/laporan-bulanan.js"></script>
+</body>
+</html>
