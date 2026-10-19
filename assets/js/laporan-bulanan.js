@@ -124,20 +124,19 @@ function renderMatrix(dari, sampai) {
   // Baris 1 untuk nama tahap (Prescribing, Trans, dll) - Opsional agar rapi
   // Baris 2 untuk nama item (disingkat sedikit agar muat)
   masterItems.forEach(item => {
-    // Ambil 3 kata pertama dari nama item agar tidak terlalu panjang
-    let shortName = item.nama_item;
-    if (shortName.length > 25) {
-      shortName = shortName.substring(0, 22) + '...';
-    }
+    // Gunakan teks asli secara UTUH
+    const fullText = item.nama_item;
     
     // Beri warna khusus jika ini item "Lain :"
-    const isLain = shortName.toLowerCase().includes('lain');
+    const isLain = fullText.toLowerCase().includes('lain');
     const bg = isLain ? 'background:#FEF3C7;' : '';
     
-    headerRow2 += `<th style="${bg} writing-mode: vertical-rl; transform: rotate(180deg); height: 150px; padding: 10px 4px;">
-      ${escapeHtml(shortName)}
+    // Word-wrap otomatis, tinggi fixed, teks vertikal
+    headerRow2 += `<th style="${bg} writing-mode: vertical-rl; transform: rotate(180deg); height: 200px; padding: 8px 4px; text-align: left; white-space: normal; word-break: break-word;">
+      ${escapeHtml(fullText)}
     </th>`;
   });
+
   
   headerRow2 += `</tr>`;
   thead.innerHTML = headerRow1 + headerRow2;
