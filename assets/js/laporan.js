@@ -1,5 +1,5 @@
 // ============================================================
-// DATA LAPORAN ME - List & Detail
+// DATA LAPORAN ME - List, Detail & Edit
 // ============================================================
 
 let allLaporan = [];
@@ -79,19 +79,12 @@ async function openDetail(id) {
   const bodyEl = document.getElementById('detailBody');
   const footerEl = document.getElementById('detailFooter');
 
-  // Pastikan elemen modal ada
-  if (!bodyEl) {
-    alert("Error: Elemen Modal tidak ditemukan di HTML.");
-    return;
-  }
-
   titleEl.textContent = `Laporan ${laporan.no_laporan}`;
   bodyEl.innerHTML = '<p class="text-center">Memuat detail...</p>';
   footerEl.innerHTML = '';
   document.getElementById('modalDetail').style.display = 'flex';
 
   try {
-    // Load detail lengkap + items + master grade
     const [detailRes, itemsRes, gradeRes] = await Promise.all([
       db.from('laporan_me')
         .select(`
@@ -118,7 +111,6 @@ async function openDetail(id) {
     const grades = gradeRes.data || [];
     const selectedGrade = grades.find(g => g.kode === d.grade);
 
-    // Kelompokkan items
     const grouped = { prescribing: [], transcribing: [], dispensing: [], administering: [] };
     items.forEach(it => {
       if (it.item && grouped[it.item.tahap]) {
@@ -194,9 +186,17 @@ async function openDetail(id) {
       ` : ''}
     `;
 
-    footerEl.innerHTML = `
-      <button type="button" class="btn btn-outline" onclick="closeDetail()">Tutup</button>
-    `;
+    // ==========================================
+    // FOOTER: Tombol Aksi
+    // ==========================================
+    let footerHtml = `<button type="button" class="btn btn-outline" onclick="closeDetail()">Tutup</button>`;
+    
+    // Tampilkan tombol Edit JIKA statusnya Draft atau Ditolak
+    if (d.status === 'draft' || d.status === 'rejected') {
+      footerHtml += `<a href="input-me.html?edit=${d.id}" class="btn btn-warning" style="margin-left:8px;">✏️ Edit Laporan</a>`;
+    }
+    
+    footerEl.innerHTML = footerHtml;
 
   } catch (err) {
     console.error(err);
