@@ -136,11 +136,18 @@ function renderGradeChart() {
   const rows = allGrades.map(g => {
     const count = counts[g.kode];
     const percent = (count / maxCount) * 100;
+    
+    // Keterangan khusus agar tidak membingungkan
+    let labelKategori = g.kategori;
+    if (g.kode === 'D') labelKategori = 'KTC (Perlu Monitoring)';
+    if (g.kode === 'F') labelKategori = 'KTD (Perawatan Lama)';
+    if (g.kode === 'H') labelKategori = 'SENTINEL (Nyaris Mati)';
+
     return `
       <div class="bar-row">
         <div class="bar-label">
           <span class="badge ${gradeBadgeClass(g.kode)}">${g.kode}</span>
-          <small>${g.kategori}</small>
+          <small style="white-space: normal; line-height: 1.1;">${labelKategori}</small>
         </div>
         <div class="bar-track">
           <div class="bar-fill bar-${g.kode}" style="width:${percent}%"></div>
