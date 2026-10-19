@@ -27,28 +27,34 @@
       text-align: center;
       vertical-align: middle;
     }
+    
+    /* HEADER KUNING (Teks Vertikal & Full Text) */
     .matrix-table th {
-      background: #FBBF24; /* Kuning lembut sesuai request PDF */
-      color: #78350F;
+      background-color: #FBBF24 !important; /* Paksa warna kuning */
+      color: #78350F !important;
       font-weight: 700;
       position: sticky;
       top: 0;
       z-index: 5;
     }
+    
     .matrix-table td.text-left {
       text-align: left;
     }
+    
     .matrix-table .tahap-header {
       background: #FFFBEB;
       color: #78350F;
       font-weight: bold;
       text-align: left;
     }
+    
     .matrix-table .check {
       color: #16A34A;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 16px;
     }
+    
     /* Sticky kolom pasien */
     .matrix-table th:nth-child(1), .matrix-table td:nth-child(1) { width: 30px; }
     .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) {
@@ -62,19 +68,29 @@
       border-right: 2px solid var(--border);
     }
     .matrix-table th:nth-child(2) {
-      background: #FBBF24;
+      background-color: #FBBF24 !important;
       z-index: 6;
     }
+    
     .print-only { display: none; }
     
+    /* PENGATURAN KHUSUS PRINT / PDF */
     @media print {
-      body { background: white; }
+      body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .app-layout { display: block; }
       #app-sidebar, #app-topbar, .page-header, .filter-bar, .btn { display: none !important; }
       #app-content { padding: 0; }
       .matrix-wrapper { box-shadow: none; overflow: visible; }
       .matrix-table { min-width: 100%; font-size: 9px; }
-      .matrix-table th, .matrix-table td { padding: 2px; }
+      .matrix-table th, .matrix-table td { padding: 4px; }
+      
+      /* Paksa cetak warna background */
+      .matrix-table th, .matrix-table th:nth-child(2) {
+        background-color: #FBBF24 !important;
+        color: #78350F !important;
+      }
+      .matrix-table .tahap-header { background: #FFFBEB !important; }
+      
       .print-only { display: block; text-align: center; margin-bottom: 20px; }
     }
   </style>
