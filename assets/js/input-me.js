@@ -210,6 +210,12 @@ async function loadDataEdit(id) {
     document.getElementById('tglLaporan').value = lap.tgl_laporan;
     document.getElementById('jamLaporan').value = lap.jam_laporan || '00:00';
     document.getElementById('ruanganId').value = lap.ruangan_id || '';
+    
+    // Cek jika ruangan kosong
+    if (!lap.ruangan_id) {
+      showToast('Perhatian: Ruangan pada laporan ini kosong. Silakan pilih ulang ruangan.', 'warning');
+    }
+
     document.getElementById('namaPasien').value = lap.nama_pasien;
     document.getElementById('noRm').value = lap.no_rm;
     document.getElementById('namaDpjp').value = lap.nama_dpjp || '';
