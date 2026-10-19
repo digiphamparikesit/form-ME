@@ -6,6 +6,7 @@ const MENU_ITEMS = [
   { href: 'dashboard.html',    icon: '📊', label: 'Dashboard',         roles: ['admin','petugas','pj'] },
   { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] },
   { href: 'laporan.html',      icon: '📄', label: 'Data Laporan',      roles: ['admin','petugas','pj'] },
+  { href: 'laporan-bulanan.html', icon: '📊', label: 'Laporan Bulanan', roles: ['admin','petugas','pj'] },
   { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj'] },
   { href: 'cetak-pdf.html',    icon: '🖨️', label: 'Cetak PDF',        roles: ['admin','petugas','pj'] },
   { href: 'master-petugas.html', icon: '👥', label: 'Master Petugas',  roles: ['admin'] },
