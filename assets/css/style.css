@@ -1084,15 +1084,16 @@ a:hover { color: var(--primary-dark); }
   text-align: right;
 }
 
-.bar-A { background: var(--info); }
-.bar-B { background: var(--success); }
-.bar-C { background: var(--success); }
-.bar-D { background: var(--warning); }
-.bar-E { background: var(--orange); }
-.bar-F { background: var(--orange); }
-.bar-G { background: var(--danger); }
-.bar-H { background: var(--danger); }
-.bar-I { background: #7F1D1D; }
+/* Bar colors per grade (Skala Keparahan) */
+.bar-A { background: #93C5FD; } /* A: Biru Muda (Aman) */
+.bar-B { background: #6EE7B7; } /* B: Hijau Muda */
+.bar-C { background: #FCD34D; } /* C: Kuning */
+.bar-D { background: #FDBA74; } /* D: Oranye Muda */
+.bar-E { background: #F97316; } /* E: Oranye Tua */
+.bar-F { background: #EF4444; } /* F: Merah Muda */
+.bar-G { background: #B91C1C; } /* G: Merah Tua */
+.bar-H { background: #7F1D1D; } /* H: Merah Marun */
+.bar-I { background: #000000; } /* I: Hitam (Kematian) */
 
 /* Tren chart */
 .tren-chart {
