@@ -104,31 +104,34 @@
       .matrix-table { 
         width: 100% !important; 
         min-width: 100% !important;
-        font-size: 10px !important; /* Sedikit diperbesar */
-        border-collapse: collapse !important; 
-        border: 2px solid #000 !important; /* Garis luar tebal */
+        font-size: 10px !important; 
+        /* KUNCI 1: Matikan collapse agar garis tidak saling tumpang tindih */
+        border-collapse: separate !important; 
+        border-spacing: 0 !important; 
+        border: 2px solid #000 !important;
       }
       
-      /* PERBAIKAN: Pertebal garis dalam tabel */
+      /* KUNCI 2: Hapus border bawaan, ganti dengan shadow garis tegas */
       .matrix-table th, .matrix-table td { 
         padding: 4px 2px !important; 
-        border: 1.5px solid #000 !important; /* 1.5px lebih tegas di PDF */
+        border: none !important; 
+        /* Garis kanan & bawah tebal 1px warna hitam */
+        box-shadow: inset -1px -1px 0 #000 !important; 
+      }
+
+      /* KUNCI 3: Tambahkan garis atas & kiri khusus untuk merapikan pojok */
+      .matrix-table thead th {
+        box-shadow: inset -1px -1px 0 #000, inset 0 1px 0 #000 !important;
+      }
+      .matrix-table tr td:nth-child(1) {
+        box-shadow: inset -1px -1px 0 #000, inset 1px 0 0 #000 !important;
       }
       
-      /* Garis khusus untuk bagian luar (kiri dan atas) */
-      .matrix-table th { 
-        position: static !important; 
-        border-top: 2px solid #000 !important;
-      }
-      .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) { 
-        position: static !important; 
-        border-left: 2px solid #000 !important;
-      }
-      
-      /* Paksa warna cetak kuning */
+      /* Paksa warna kuning */
       .matrix-table th, .matrix-table th:nth-child(2) {
         background-color: #FBBF24 !important;
         color: #78350F !important;
+        position: static !important; /* Matikan sticky saat print */
       }
       
       .print-only { display: block; text-align: center; margin-bottom: 15px; }
