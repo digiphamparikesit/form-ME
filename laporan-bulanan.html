@@ -14,15 +14,18 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
       margin-bottom: 20px;
+      padding-top: 2px; /* Mencegah garis atas terpotong saat di-scroll */
     }
+    
     .matrix-table {
       border-collapse: collapse;
       font-size: 11px;
       width: 100%;
-      min-width: 1200px; /* Agar bisa di-scroll di HP */
+      min-width: 1200px;
+      border: 2px solid #000 !important; /* Garis luar tabel tebal */
     }
     
-    /* GARIS TABEL HITAM TEGAS */
+    /* GARIS TABEL HITAM */
     .matrix-table th, .matrix-table td {
       border: 1px solid #000 !important; 
       padding: 4px 6px;
@@ -30,24 +33,19 @@
       vertical-align: middle;
     }
     
-    /* HEADER KUNING (Teks Vertikal & Full Text) */
+    /* HEADER KUNING */
     .matrix-table th {
-      background-color: #FBBF24 !important; /* Paksa warna kuning */
+      background-color: #FBBF24 !important;
       color: #78350F !important;
       font-weight: 700;
       position: sticky;
       top: 0;
       z-index: 5;
+      /* Paksa border atas muncul di mode sticky */
+      box-shadow: inset 0 2px 0 0 #000, inset 0 -1px 0 0 #000; 
     }
     
     .matrix-table td.text-left {
-      text-align: left;
-    }
-    
-    .matrix-table .tahap-header {
-      background: #FFFBEB;
-      color: #78350F;
-      font-weight: bold;
       text-align: left;
     }
     
@@ -69,9 +67,12 @@
       text-align: left;
       border-right: 2px solid #000 !important;
     }
+    
     .matrix-table th:nth-child(2) {
       background-color: #FBBF24 !important;
       z-index: 6;
+      /* Garis luar kiri tebal untuk kolom sticky */
+      box-shadow: inset 2px 0 0 0 #000, inset 0 2px 0 0 #000, inset 0 -1px 0 0 #000;
     }
     
     .print-only { display: none; }
@@ -82,25 +83,32 @@
       .app-layout { display: block; }
       #app-sidebar, #app-topbar, .page-header, .filter-bar, .btn { display: none !important; }
       #app-content { padding: 0; }
-      .matrix-wrapper { box-shadow: none; overflow: visible; }
-      .matrix-table { min-width: 100%; font-size: 9px; }
+      .matrix-wrapper { box-shadow: none; overflow: visible; padding: 0; }
+      
+      .matrix-table { 
+        min-width: 100%; 
+        font-size: 9px; 
+        border: 2px solid #000 !important; 
+      }
+      
       .matrix-table th, .matrix-table td { padding: 4px; }
       
-      /* Paksa cetak warna background */
+      /* MATIKAN STICKY SAAT PRINT AGAR GARIS ATAS TIDAK HILANG */
+      .matrix-table th { position: static !important; box-shadow: none !important; }
+      .matrix-table th:nth-child(2), .matrix-table td:nth-child(2) { position: static !important; }
+      
+      /* Paksa warna cetak */
       .matrix-table th, .matrix-table th:nth-child(2) {
         background-color: #FBBF24 !important;
         color: #78350F !important;
       }
-      .matrix-table .tahap-header { background: #FFFBEB !important; }
       
-      /* Pastikan garis hitam tetap ada di PDF */
+      /* Garis tegas saat print */
       .matrix-table th, .matrix-table td {
         border: 1px solid #000 !important;
       }
       
       .print-only { display: block; text-align: center; margin-bottom: 20px; }
-      
-      /* Memastikan THEAD diulang di halaman baru */
       .matrix-table thead { display: table-header-group; }
       .matrix-table tr { page-break-inside: avoid; }
     }
