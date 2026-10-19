@@ -21,8 +21,10 @@
       width: 100%;
       min-width: 1200px; /* Agar bisa di-scroll di HP */
     }
+    
+    /* GARIS TABEL HITAM TEGAS */
     .matrix-table th, .matrix-table td {
-      border: 1px solid var(--border);
+      border: 1px solid #000 !important; 
       padding: 4px 6px;
       text-align: center;
       vertical-align: middle;
@@ -65,7 +67,7 @@
       width: 150px;
       min-width: 150px;
       text-align: left;
-      border-right: 2px solid var(--border);
+      border-right: 2px solid #000 !important;
     }
     .matrix-table th:nth-child(2) {
       background-color: #FBBF24 !important;
@@ -91,7 +93,16 @@
       }
       .matrix-table .tahap-header { background: #FFFBEB !important; }
       
+      /* Pastikan garis hitam tetap ada di PDF */
+      .matrix-table th, .matrix-table td {
+        border: 1px solid #000 !important;
+      }
+      
       .print-only { display: block; text-align: center; margin-bottom: 20px; }
+      
+      /* Memastikan THEAD diulang di halaman baru */
+      .matrix-table thead { display: table-header-group; }
+      .matrix-table tr { page-break-inside: avoid; }
     }
   </style>
 </head>
