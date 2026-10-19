@@ -3,9 +3,14 @@
 // ============================================================
 
 let allLaporan = [];
+let currentProfile = null; // Tambahkan baris ini
 
 document.addEventListener('DOMContentLoaded', async () => {
   await renderLayout('laporan.html');
+  
+  // Tambahkan baris ini untuk mengambil data profil yang sedang login
+  currentProfile = await getCurrentProfile(); 
+  
   await loadLaporan();
   
   // Event listener untuk tutup modal
