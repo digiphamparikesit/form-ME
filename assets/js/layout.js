@@ -100,10 +100,24 @@ async function renderLayout(activePage) {
     document.getElementById('btnHamburger').addEventListener('click', toggleSidebar);
   }
 
-  // Close sidebar otomatis kalau link diklik (mobile)
+  // Close sidebar otomatis kalau link diklik (mobile) & Tampilkan Loading
   sidebarEl?.querySelectorAll('.sidebar-item').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
       if (window.innerWidth <= 768) closeSidebar();
+      
+      // Jangan tampilkan loading jika yang diklik adalah menu halaman aktif saat ini
+      if (el.classList.contains('active')) return;
+
+      // Tampilkan Loading Overlay
+      const loader = document.createElement('div');
+      loader.id = 'pageLoader';
+      loader.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(249,250,251,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+      loader.innerHTML = `
+        <div style="width:40px;height:40px;border:4px solid #16A34A;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <div style="margin-top:16px;font-weight:600;color:#14532D;font-family:sans-serif;">Memuat Halaman...</div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      `;
+      document.body.appendChild(loader);
     });
   });
 
