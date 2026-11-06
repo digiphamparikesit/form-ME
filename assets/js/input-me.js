@@ -71,7 +71,7 @@ function onRuanganInput(val) {
   if (matches.length === 0) { list.classList.remove('show'); return; }
   
   list.innerHTML = matches.map(r => `
-    <div class="ac-item" onclick="pilihRuangan('${r.id}', '${escapeAttr(r.nama_ruangan)}')">
+    <div class="ac-item" onclick="pilihRuangan(${r.id}, '${escapeHtml(r.nama_ruangan)}')">
       ${escapeHtml(r.nama_ruangan)}
     </div>
   `).join('');
