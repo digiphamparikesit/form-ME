@@ -1,5 +1,5 @@
 // ============================================================
-// INPUT ME - Form 4 Step (Mendukung Create & Edit)
+// INPUT ME - Form 4 Step (Revisi Autocomplete Ruangan)
 // ============================================================
 
 let currentStep = 1;
@@ -54,12 +54,40 @@ async function loadRuangan() {
   const { data, error } = await db.from('ruangan').select('id, nama_ruangan').eq('is_active', true).order('nama_ruangan');
   if (error) { console.error(error); return; }
   allRuangan = data || [];
-
-  const select = document.getElementById('ruanganId');
-  select.innerHTML = '<option value="">-- Pilih Ruangan --</option>' +
-    allRuangan.map(r => `<option value="${r.id}">${escapeHtml(r.nama_ruangan)}</option>`).join('');
+  // Dropdown select sudah diganti jadi input, tidak perlu render option
 }
 
+// ============================================================
+// AUTOCOMPLETE RUANGAN
+// ============================================================
+function onRuanganInput(val) {
+  const list = document.getElementById('acListRuangan');
+  const q = (val || '').toLowerCase().trim();
+  
+  if (!q) { list.classList.remove('show'); return; }
+  
+  const matches = allRuangan.filter(r => r.nama_ruangan.toLowerCase().includes(q));
+  
+  if (matches.length === 0) { list.classList.remove('show'); return; }
+  
+  list.innerHTML = matches.map(r => `
+    <div class="ac-item" onclick="pilihRuangan('${r.id}', '${escapeAttr(r.nama_ruangan)}')">
+      ${escapeHtml(r.nama_ruangan)}
+    </div>
+  `).join('');
+  
+  list.classList.add('show');
+}
+
+function pilihRuangan(id, nama) {
+  document.getElementById('inputRuangan').value = nama;
+  document.getElementById('ruanganId').value = id;
+  document.getElementById('acListRuangan').classList.remove('show');
+}
+
+// ============================================================
+// LOAD ITEMS & GRADES
+// ============================================================
 async function loadItems() {
   const { data, error } = await db.from('item_monitoring').select('id, tahap, nama_item, urutan').eq('is_active', true).order('tahap').order('urutan');
   if (error) {
@@ -186,49 +214,44 @@ function handleGradeChange(e) {
 // LOAD DATA EDIT (MENGISI FORM DENGAN DATA LAMA)
 // ============================================================
 async function loadDataEdit(id) {
-  // Ubah header
   document.querySelector('.page-title').textContent = 'Edit Laporan ME';
   document.querySelector('.page-subtitle').textContent = 'Perbarui data laporan yang sudah ada';
   
-  // Sembunyikan tombol Save Draft (karena ini edit)
   const btnSaveDraft = document.getElementById('btnSaveDraft');
   if(btnSaveDraft) btnSaveDraft.style.display = 'none';
   
-  // Ubah tombol Submit jadi Update
   const btnSubmit = document.getElementById('btnSubmit');
   btnSubmit.innerHTML = '💾 Simpan Perubahan';
   btnSubmit.dataset.editId = id;
 
   try {
-    // 1. Tarik data header
-    const { data: lap, error } = await db.from('laporan_me').select('*').eq('id', id).single();
+    const { data: lap, error } = await db.from('laporan_me').select('*, ruangan:ruangan_id(nama_ruangan)').eq('id', id).single();
     if (error) throw error;
 
-    // 2. Isi form header
     document.getElementById('tglTemuan').value = lap.tgl_temuan;
     document.getElementById('jamTemuan').value = lap.jam_temuan || '00:00';
     document.getElementById('tglLaporan').value = lap.tgl_laporan;
     document.getElementById('jamLaporan').value = lap.jam_laporan || '00:00';
-    document.getElementById('ruanganId').value = lap.ruangan_id || '';
     
-    // Cek jika ruangan kosong
+    // Set Ruangan ID (hidden) dan Nama Ruangan (tampilan)
+    document.getElementById('ruanganId').value = lap.ruangan_id || '';
+    document.getElementById('inputRuangan').value = lap.ruangan?.nama_ruangan || '';
+    
     if (!lap.ruangan_id) {
-      showToast('Perhatian: Ruangan pada laporan ini kosong. Silakan pilih ulang ruangan.', 'warning');
+      showToast('Perhatian: Ruangan kosong. Silakan pilih ulang.', 'warning');
     }
 
     document.getElementById('namaPasien').value = lap.nama_pasien;
     document.getElementById('noRm').value = lap.no_rm;
     document.getElementById('namaDpjp').value = lap.nama_dpjp || '';
 
-    // 3. Tarik dan centang item error
     const { data: details } = await db.from('laporan_me_detail').select('*').eq('laporan_id', id);
     if (details && details.length > 0) {
       details.forEach(d => {
         const cb = document.querySelector(`.item-check[data-id="${d.item_monitoring_id}"]`);
         if (cb) {
           cb.checked = true;
-          cb.dispatchEvent(new Event('change')); // Trigger fungsi centang otomatis
-          
+          cb.dispatchEvent(new Event('change'));
           if (d.catatan_lain) {
             const input = document.querySelector(`[data-lain-id="${d.item_monitoring_id}"]`);
             if (input) input.value = d.catatan_lain;
@@ -237,7 +260,6 @@ async function loadDataEdit(id) {
       });
     }
 
-    // 4. Isi Grade
     if (lap.grade) {
       const radio = document.querySelector(`input[name="grade"][value="${lap.grade}"]`);
       if (radio) {
@@ -246,11 +268,10 @@ async function loadDataEdit(id) {
       }
     }
 
-    // 5. Isi Deskripsi & Tindakan
     document.getElementById('deskripsiKejadian').value = lap.deskripsi_kejadian || '';
     document.getElementById('tindakan').value = lap.tindakan || '';
 
-    showToast('Data laporan berhasil dimuat. Silakan edit.', 'success');
+    showToast('Data laporan berhasil dimuat.', 'success');
   } catch (err) {
     console.error(err);
     showToast('Gagal memuat data edit: ' + err.message, 'danger');
@@ -271,12 +292,19 @@ function bindEvents() {
 
   document.getElementById('btnSaveDraft').addEventListener('click', () => saveLaporan('draft'));
   document.getElementById('btnSubmit').addEventListener('click', () => saveLaporan('pending'));
+
+  // Sembunyikan autocomplete ruangan jika klik di luar
+  document.addEventListener('click', e => {
+    if(!e.target.closest('#inputRuangan') && !e.target.closest('#acListRuangan')) {
+      document.getElementById('acListRuangan').classList.remove('show');
+    }
+  });
 }
 
 function validateStep1() {
   const errBox = document.getElementById('errorStep1');
   errBox.style.display = 'none';
-  const required = ['tglTemuan', 'jamTemuan', 'tglLaporan', 'jamLaporan', 'ruanganId', 'namaPasien', 'noRm'];
+  const required = ['tglTemuan', 'jamTemuan', 'tglLaporan', 'jamLaporan', 'namaPasien', 'noRm'];
   for (const id of required) {
     if (!document.getElementById(id).value.trim()) {
       errBox.textContent = 'Lengkapi semua field yang bertanda *';
@@ -284,6 +312,15 @@ function validateStep1() {
       document.getElementById(id).focus();
       return false;
     }
+  }
+  // Validasi Ruangan Autocomplete
+  const rId = document.getElementById('ruanganId').value;
+  const rTeks = document.getElementById('inputRuangan').value;
+  if (!rId || !rTeks) {
+    errBox.textContent = 'Pilih Ruangan dari daftar pencarian';
+    errBox.style.display = 'block';
+    document.getElementById('inputRuangan').focus();
+    return false;
   }
   return true;
 }
@@ -350,7 +387,8 @@ function goToStep(n) {
 // REVIEW (STEP 4)
 // ============================================================
 function renderReview() {
-  const ruangan = allRuangan.find(r => r.id === parseInt(document.getElementById('ruanganId').value));
+  // Ambil nama ruangan dari input teks
+  const ruanganNama = document.getElementById('inputRuangan').value;
   const grade = allGrades.find(g => g.kode === selectedGrade);
 
   const groupedItems = {};
@@ -379,7 +417,7 @@ function renderReview() {
       <table class="review-table">
         <tr><td>Tgl Temuan</td><td>: <b>${formatTanggal(document.getElementById('tglTemuan').value)} ${document.getElementById('jamTemuan').value}</b></td></tr>
         <tr><td>Tgl Laporan</td><td>: <b>${formatTanggal(document.getElementById('tglLaporan').value)} ${document.getElementById('jamLaporan').value}</b></td></tr>
-        <tr><td>Ruangan</td><td>: <b>${escapeHtml(ruangan?.nama_ruangan || '-')}</b></td></tr>
+        <tr><td>Ruangan</td><td>: <b>${escapeHtml(ruanganNama || '-')}</b></td></tr>
         <tr><td>Nama Pasien</td><td>: <b>${escapeHtml(document.getElementById('namaPasien').value)}</b></td></tr>
         <tr><td>No. RM</td><td>: <b>${escapeHtml(document.getElementById('noRm').value)}</b></td></tr>
         <tr><td>DPJP</td><td>: <b>${escapeHtml(document.getElementById('namaDpjp').value || '-')}</b></td></tr>
@@ -416,7 +454,7 @@ async function saveLaporan(status) {
   const btnSave = document.getElementById('btnSaveDraft');
   const btnSubmit = document.getElementById('btnSubmit');
   
-  const editId = btnSubmit.dataset.editId; // Cek apakah ada ID edit
+  const editId = btnSubmit.dataset.editId;
   const isEdit = !!editId;
 
   btnSave.disabled = true;
@@ -428,7 +466,7 @@ async function saveLaporan(status) {
       jam_temuan: document.getElementById('jamTemuan').value,
       tgl_laporan: document.getElementById('tglLaporan').value,
       jam_laporan: document.getElementById('jamLaporan').value,
-      ruangan_id: parseInt(document.getElementById('ruanganId').value),
+      ruangan_id: parseInt(document.getElementById('ruanganId').value), // Ambil dari hidden input
       petugas_id: currentProfile.id,
       nama_pasien: document.getElementById('namaPasien').value.trim(),
       no_rm: document.getElementById('noRm').value.trim(),
@@ -442,20 +480,17 @@ async function saveLaporan(status) {
     let laporanId = editId;
 
     if (isEdit) {
-      // MODE EDIT: Update header, hapus detail lama
       const { error: errUpdate } = await db.from('laporan_me').update(payload).eq('id', editId);
       if (errUpdate) throw errUpdate;
       await db.from('laporan_me_detail').delete().eq('laporan_id', editId);
     } else {
-      // MODE BARU: Insert header baru
       payload.created_by = currentProfile.id;
       const { data: laporan, error: errInsert } = await db.from('laporan_me').insert(payload).select('id, no_laporan').single();
       if (errInsert) throw errInsert;
       laporanId = laporan.id;
-      payload.no_laporan = laporan.no_laporan; // Simpan nomor untuk pesan sukses
+      payload.no_laporan = laporan.no_laporan;
     }
 
-    // Insert ulang detail item
     const detailPayload = Object.keys(selectedItems).map(itemId => {
       const lainInput = document.querySelector(`[data-lain-id="${itemId}"]`);
       return {
