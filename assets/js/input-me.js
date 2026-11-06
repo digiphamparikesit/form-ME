@@ -64,14 +64,22 @@ function onRuanganInput(val) {
   const list = document.getElementById('acListRuangan');
   const q = (val || '').toLowerCase().trim();
   
-  if (!q) { list.classList.remove('show'); return; }
+  // Jika input kosong, sembunyikan list dan langsung keluar dari fungsi
+  if (!q) { 
+    list.classList.remove('show'); 
+    return; 
+  }
   
   const matches = allRuangan.filter(r => r.nama_ruangan.toLowerCase().includes(q));
   
-  if (matches.length === 0) { list.classList.remove('show'); return; }
+  // Jika tidak ada hasil yang cocok, sembunyikan list
+  if (matches.length === 0) { 
+    list.classList.remove('show'); 
+    return; 
+  }
   
   list.innerHTML = matches.map(r => `
-    <div class="ac-item" onclick="pilihRuangan(${r.id}, '${escapeHtml(r.nama_ruangan)}')">
+    <div class="ac-item" onclick="pilihRuangan('${r.id}', '${escapeHtml(r.nama_ruangan)}')">
       ${escapeHtml(r.nama_ruangan)}
     </div>
   `).join('');
