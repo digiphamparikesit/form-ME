@@ -1,0 +1,20 @@
+name: Supabase Heartbeat
+
+on:
+  schedule:
+    # Berjalan setiap 3 hari sekali pada jam 06:00 UTC
+    - cron: '0 6 */3 * *'
+  workflow_dispatch: # Memungkinkan untuk dijalankan manual dari tab Actions
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database (Insert Row)
+        run: |
+          curl -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/heartbeat_me" \
+          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+          -H "Content-Type: application/json" \
+          -H "Prefer: return=minimal" \
+          -d '{"created_at": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"}'
