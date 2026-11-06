@@ -10,7 +10,8 @@ const MENU_ITEMS = [
   { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj'] },
   { href: 'cetak-pdf.html',    icon: '🖨️', label: 'Cetak PDF',        roles: ['admin','petugas','pj'] },
   { href: 'master-petugas.html', icon: '👥', label: 'Master Petugas',  roles: ['admin'] },
-  { href: 'master-ruangan.html', icon: '🏥', label: 'Master Ruangan', roles: ['admin'] }
+  { href: 'master-ruangan.html', icon: '🏥', label: 'Master Ruangan', roles: ['admin'] },
+  { href: 'debug.html',          icon: '🛠️', label: 'Debug Koneksi', roles: ['admin'] } // Tambahkan ini
 ];
 
 async function renderLayout(activePage) {
