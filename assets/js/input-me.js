@@ -62,19 +62,22 @@ async function loadRuangan() {
 // ============================================================
 function onRuanganInput(val) {
   const list = document.getElementById('acListRuangan');
-  const q = (val || '').toLowerCase().trim();
+  // Ubah ke string, hapus semua spasi di awal/akhir, dan jadikan huruf kecil
+  const q = String(val || '').replace(/\s+/g, '').toLowerCase(); 
   
-  // Jika input kosong, sembunyikan list dan langsung keluar dari fungsi
+  // Jika kosong (atau hanya berisi spasi), paksa sembunyikan
   if (!q) { 
     list.classList.remove('show'); 
+    list.style.display = 'none'; // Paksa hilang lewat inline-style
+    list.innerHTML = '';         // Bersihkan isi elemen
     return; 
   }
   
   const matches = allRuangan.filter(r => r.nama_ruangan.toLowerCase().includes(q));
   
-  // Jika tidak ada hasil yang cocok, sembunyikan list
   if (matches.length === 0) { 
     list.classList.remove('show'); 
+    list.style.display = 'none';
     return; 
   }
   
@@ -84,7 +87,9 @@ function onRuanganInput(val) {
     </div>
   `).join('');
   
+  // Paksa muncul
   list.classList.add('show');
+  list.style.display = 'block'; 
 }
 
 function pilihRuangan(id, nama) {
