@@ -2,6 +2,9 @@
 // LAYOUT HELPER - Sidebar & Topbar reusable (MOBILE OPTIMIZED)
 // ============================================================
 
+// TAMBAHKAN BARIS INI:
+document.write('<script src="assets/js/safe-query.js"><\/script>');
+
 const MENU_ITEMS = [
   { href: 'dashboard.html',    icon: '📊', label: 'Dashboard',         roles: ['admin','petugas','pj'] },
   { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] },
