@@ -1,19 +1,15 @@
 // ============================================================
-// DATA LAPORAN ME - List, Detail & Edit
+// DATA LAPORAN ME - List, Detail & Edit (Dengan Safe Query)
 // ============================================================
 
 let allLaporan = [];
-let currentProfile = null; // Tambahkan baris ini
+let currentProfile = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await renderLayout('laporan.html');
-  
-  // Tambahkan baris ini untuk mengambil data profil yang sedang login
   currentProfile = await getCurrentProfile(); 
-  
   await loadLaporan();
   
-  // Event listener untuk tutup modal
   const btnClose = document.getElementById('btnCloseDetail');
   if(btnClose) btnClose.addEventListener('click', closeDetail);
   
@@ -31,22 +27,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadLaporan() {
   const tbody = document.getElementById('tbodyLaporan');
+  tbody.innerHTML = `<tr><td colspan="8" class="text-center">Memuat data...</td></tr>`;
 
-  const { data, error } = await db
-    .from('laporan_me')
-    .select(`
-      id, no_laporan, tgl_temuan, nama_pasien, no_rm, grade, status, created_at,
-      ruangan:ruangan_id(nama_ruangan),
-      petugas:petugas_id(nama)
-    `)
-    .order('created_at', { ascending: false });
+  // Menggunakan safeQuery untuk mencegah freeze
+  const result = await safeQuery('load-laporan', (signal) => 
+    db.from('laporan_me')
+      .select(`
+        id, no_laporan, tgl_temuan, nama_pasien, no_rm, grade, status, created_at,
+        ruangan:ruangan_id(nama_ruangan),
+        petugas:petugas_id(nama)
+      `)
+      .order('created_at', { ascending: false })
+      .abortSignal(signal)
+  );
 
-  if (error) {
-    console.error(error);
-    tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Gagal memuat data: ${error.message}</td></tr>`;
+  if (result.error) {
+    console.error(result.error);
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Gagal memuat data: ${result.error.message}</td></tr>`;
     return;
   }
 
+  const data = result.data;
   if (!data || !data.length) {
     tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada laporan ME</td></tr>`;
     return;
@@ -90,23 +91,34 @@ async function openDetail(id) {
   document.getElementById('modalDetail').style.display = 'flex';
 
   try {
+    // Menggunakan safeQuery secara paralel
     const [detailRes, itemsRes, gradeRes] = await Promise.all([
-      db.from('laporan_me')
-        .select(`
-          *,
-          ruangan:ruangan_id(nama_ruangan),
-          petugas:petugas_id(nama, profesi),
-          verifikator:verified_by(nama)
-        `)
-        .eq('id', id)
-        .single(),
-      db.from('laporan_me_detail')
-        .select(`
-          catatan_lain,
-          item:item_monitoring_id(id, tahap, nama_item, urutan)
-        `)
-        .eq('laporan_id', id),
-      db.from('grade_insiden').select('kode, kategori, deskripsi')
+      safeQuery('detail-header', (signal) => 
+        db.from('laporan_me')
+          .select(`
+            *,
+            ruangan:ruangan_id(nama_ruangan),
+            petugas:petugas_id(nama, profesi),
+            verifikator:verified_by(nama)
+          `)
+          .eq('id', id)
+          .single()
+          .abortSignal(signal)
+      ),
+      safeQuery('detail-items', (signal) => 
+        db.from('laporan_me_detail')
+          .select(`
+            catatan_lain,
+            item:item_monitoring_id(id, tahap, nama_item, urutan)
+          `)
+          .eq('laporan_id', id)
+          .abortSignal(signal)
+      ),
+      safeQuery('detail-grades', (signal) => 
+        db.from('grade_insiden')
+          .select('kode, kategori, deskripsi')
+          .abortSignal(signal)
+      )
     ]);
 
     if (detailRes.error) throw new Error("Gagal memuat data laporan: " + detailRes.error.message);
@@ -191,12 +203,8 @@ async function openDetail(id) {
       ` : ''}
     `;
 
-    // ==========================================
-    // FOOTER: Tombol Aksi
-    // ==========================================
     let footerHtml = `<button type="button" class="btn btn-outline" onclick="closeDetail()">Tutup</button>`;
     
-    // Tampilkan tombol Edit JIKA statusnya Draft, Ditolak, ATAU yang login adalah Admin
     const isAdmin = currentProfile.role === 'admin';
     if (d.status === 'draft' || d.status === 'rejected' || isAdmin) {
       footerHtml += `<a href="input-me.html?edit=${d.id}" class="btn btn-warning" style="margin-left:8px;">✏️ Edit Laporan</a>`;
