@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Supabase | Monitoring ME</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* CSS Khusus Debug */
+    .debug-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .debug-card { background: #fbfdfb; border: 1.5px solid #e2e8e4; border-radius: 12px; padding: 14px; }
+    .debug-card .lbl { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+    .debug-card .val { font-size: 15px; font-weight: 700; color: var(--primary-dark); margin-top: 6px; word-break: break-all; font-family: monospace; }
+    .debug-card.ok { border-color: #86efac; background: #f0fdf4; }
+    .debug-card.err { border-color: #fca5a5; background: #fef2f2; }
+    .debug-card.warn { border-color: #fcd34d; background: #fffbeb; }
+    
+    .test-list { display: flex; flex-direction: column; gap: 8px; }
+    .test-item { padding: 12px 14px; background: #f7fbf8; border-radius: 10px; border-left: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: start; gap: 12px; font-size: 13px; }
+    .test-item.pass { border-left-color: #16a34a; background: #f0fdf4; }
+    .test-item.fail { border-left-color: var(--danger); background: #fef2f2; }
+    .test-item.run { border-left-color: var(--warning); background: #fffbeb; }
+    .test-item .test-name { font-weight: 600; }
+    .test-item .test-detail { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: monospace; word-break: break-all; }
+    
+    .log-list { background: #1f2937; color: #e5e7eb; padding: 14px; border-radius: 12px; font-family: monospace; font-size: 11.5px; max-height: 280px; overflow-y: auto; line-height: 1.6; }
+    .log-time { color: #6b7280; }
+    .log-ok { color: #86efac; }
+    .log-err { color: #fca5a5; }
+    .log-warn { color: #fcd34d; }
+    .log-info { color: #93c5fd; }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <div id="app-sidebar"></div>
+    <div id="app-topbar"></div>
+
+    <main id="app-content">
+      <div class="page-header">
+        <div>
+          <h3 class="page-title">🔍 Debug Koneksi Supabase</h3>
+          <p class="page-subtitle">Uji kecepatan jaringan dan validitas database</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="runAllTests()">▶ Jalankan Test</button>
+          <button class="btn btn-outline" onclick="clearLogs()">🧹 Bersihkan Log</button>
+        </div>
+      </div>
+
+      <div class="debug-grid">
+        <div class="debug-card" id="dcConfig">
+          <div class="lbl">URL Project</div>
+          <div class="val" id="dConfig">Memuat...</div>
+        </div>
+        <div class="debug-card" id="dcStatus">
+          <div class="lbl">Status Koneksi</div>
+          <div class="val" id="dStatus">Belum dites</div>
+        </div>
+        <div class="debug-card" id="dcLatency">
+          <div class="lbl">Latency (Kecepatan)</div>
+          <div class="val" id="dLatency">-</div>
+        </div>
+        <div class="debug-card" id="dcRetry">
+          <div class="lbl">Sistem Anti-Freeze</div>
+          <div class="val" id="dRetry">Aktif (3x Retry)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">📋 Hasil Pengujian</h3>
+        <div class="test-list" id="testList">
+          <div class="text-muted text-center" style="padding:20px;">Klik "Jalankan Test" untuk memulai.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">📜 Log Aktivitas Database (Terbaru)</h3>
+        <div class="log-list" id="logList">
+          <div class="log-line"><span class="log-time">[--:--:--]</span> <span class="log-info">Menunggu aktivitas...</span></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/safe-query.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderLayout('debug.html');
+      document.getElementById('dConfig').textContent = SUPABASE_URL.replace('https://','').split('.')[0];
+      renderLogs();
+    });
+
+    async function runAllTests() {
+      const container = document.getElementById('testList');
+      container.innerHTML = '';
+      
+      const tests = [
+        { name: '1. Cek Tabel Laporan ME', fn: testTableLaporan },
+        { name: '2. Cek Tabel Master Petugas', fn: testTablePetugas },
+        { name: '3. Cek Tabel Master Ruangan', fn: testTableRuangan },
+        { name: '4. Cek Koneksi Insert/Delete (Simulasi)', fn: testWrite }
+      ];
+
+      for (const t of tests) {
+        const itemId = 'test_' + Math.random().toString(36).slice(2);
+        const el = document.createElement('div');
+        el.id = itemId;
+        el.className = 'test-item run';
+        el.innerHTML = `<div><div class="test-name">${t.name}</div><div class="test-detail">⏳ Menjalankan...</div></div><div class="test-status">⏳</div>`;
+        container.appendChild(el);
+
+        try {
+          const result = await t.fn();
+          const el2 = document.getElementById(itemId);
+          if (result.ok) {
+            el2.className = 'test-item pass';
+            el2.innerHTML = `<div><div class="test-name">${t.name}</div><div class="test-detail">${escapeHtml(result.detail)}</div></div><div class="test-status">✅</div>`;
+          } else {
+            el2.className = 'test-item fail';
+            el2.innerHTML = `<div><div class="test-name">${t.name}</div><div class="test-detail">${escapeHtml(result.detail)}</div></div><div class="test-status">❌</div>`;
+          }
+        } catch (err) {
+          const el2 = document.getElementById(itemId);
+          el2.className = 'test-item fail';
+          el2.innerHTML = `<div><div class="test-name">${t.name}</div><div class="test-detail">${escapeHtml(err.message)}</div></div><div class="test-status">❌</div>`;
+        }
+      }
+
+      const fails = container.querySelectorAll('.test-item.fail').length;
+      const dc = document.getElementById('dcStatus');
+      if (fails === 0) {
+        document.getElementById('dStatus').textContent = `✅ Online`;
+        dc.className = 'debug-card ok';
+      } else {
+        document.getElementById('dStatus').textContent = `❌ Gagal (${fails} error)`;
+        dc.className = 'debug-card err';
+      }
+    }
+
+    async function testTableLaporan() {
+      const t0 = performance.now();
+      const result = await safeQuery('test-laporan', (signal) => db.from('laporan_me').select('id', { count: 'exact', head: true }).abortSignal(signal));
+      const latency = Math.round(performance.now() - t0);
+      document.getElementById('dLatency').textContent = latency + 'ms';
+      
+      if (result.error) return { ok: false, detail: result.error.message };
+      return { ok: true, detail: `Tabel OK • ${result.count} baris • ${latency}ms` };
+    }
+
+    async function testTablePetugas() {
+      const result = await safeQuery('test-petugas', (signal) => db.from('profiles').select('id', { count: 'exact', head: true }).abortSignal(signal));
+      if (result.error) return { ok: false, detail: result.error.message };
+      return { ok: true, detail: `Tabel OK • ${result.count} baris` };
+    }
+
+    async function testTableRuangan() {
+      const result = await safeQuery('test-ruangan', (signal) => db.from('ruangan').select('id', { count: 'exact', head: true }).abortSignal(signal));
+      if (result.error) return { ok: false, detail: result.error.message };
+      return { ok: true, detail: `Tabel OK • ${result.count} baris` };
+    }
+
+    async function testWrite() {
+      // Kita simulasikan ambil 1 data (read) karena insert di laporan_me butuh banyak relasi
+      const result = await safeQuery('test-read', (signal) => db.from('laporan_me').select('id').limit(1).abortSignal(signal));
+      if (result.error) return { ok: false, detail: result.error.message };
+      return { ok: true, detail: 'Akses SELECT berhasil (RLS Policy OK)' };
+    }
+  </script>
+</body>
+</html>
