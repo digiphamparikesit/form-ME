@@ -99,7 +99,8 @@ function roleLabel(role) {
   const map = {
     admin: 'Administrator',
     petugas: 'Petugas',
-    pj: 'Apoteker PJ'
+    pj: 'Apoteker PJ',
+    kepala: 'Kepala Ruangan'
   };
   return map[role] || role;
 }
