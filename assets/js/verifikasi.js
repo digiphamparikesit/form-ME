@@ -206,7 +206,7 @@ async function openDetail(id) {
  if (d.status === 'pending') {
     footer.innerHTML = `
       <button type="button" class="btn btn-outline" id="btnCloseDetail2">Tutup</button>
-      <a href="input-me.html?edit=${id}" class="btn btn-warning">✏️ Edit Laporan</a>
+      <a href="input-me.html?edit=${id}" class="btn btn-warning" style="margin-left:8px;">✏️ Edit Laporan</a>
       <button type="button" class="btn btn-danger" id="btnReject">❌ Tolak</button>
       <button type="button" class="btn btn-success" id="btnVerify">✅ Verifikasi</button>
     `;
