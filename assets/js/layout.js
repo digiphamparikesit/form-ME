@@ -6,12 +6,12 @@
 document.write('<script src="assets/js/safe-query.js"><\/script>');
 
 const MENU_ITEMS = [
-  { href: 'dashboard.html',    icon: '📊', label: 'Dashboard',         roles: ['admin','petugas','pj'] },
-  { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] },
-  { href: 'laporan.html',      icon: '📄', label: 'Data Laporan',      roles: ['admin','petugas','pj'] },
-  { href: 'laporan-bulanan.html', icon: '📊', label: 'Laporan Bulanan', roles: ['admin','petugas','pj'] },
-  { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj'] },
-  { href: 'cetak-pdf.html',    icon: '🖨️', label: 'Cetak PDF',        roles: ['admin','petugas','pj'] },
+  { href: 'dashboard.html',    icon: '📊', label: 'Dashboard',         roles: ['admin','petugas','pj','kepala'] },
+  { href: 'input-me.html',     icon: '📝', label: 'Input ME',          roles: ['admin','petugas','pj'] }, // Kepala tidak input
+  { href: 'laporan.html',      icon: '📄', label: 'Data Laporan',      roles: ['admin','petugas','pj','kepala'] },
+  { href: 'laporan-bulanan.html', icon: '📊', label: 'Laporan Bulanan', roles: ['admin','petugas','pj','kepala'] },
+  { href: 'verifikasi.html',   icon: '✅', label: 'Verifikasi',        roles: ['admin','pj','kepala'] }, // Kepala bisa verifikasi
+  { href: 'cetak-pdf.html',    icon: '🖨️', label: 'Cetak PDF',        roles: ['admin','petugas','pj','kepala'] },
   { href: 'master-petugas.html', icon: '👥', label: 'Master Petugas',  roles: ['admin'] },
   { href: 'master-ruangan.html', icon: '🏥', label: 'Master Ruangan', roles: ['admin'] },
   { href: 'debug.html',          icon: '🛠️', label: 'Debug Koneksi', roles: ['admin'] } // Tambahkan ini
