@@ -203,9 +203,10 @@ async function openDetail(id) {
   // Footer: tombol aksi
   const footer = document.getElementById('detailFooter');
 
-  if (d.status === 'pending') {
+ if (d.status === 'pending') {
     footer.innerHTML = `
       <button type="button" class="btn btn-outline" id="btnCloseDetail2">Tutup</button>
+      <a href="input-me.html?edit=${id}" class="btn btn-warning">✏️ Edit Laporan</a>
       <button type="button" class="btn btn-danger" id="btnReject">❌ Tolak</button>
       <button type="button" class="btn btn-success" id="btnVerify">✅ Verifikasi</button>
     `;
