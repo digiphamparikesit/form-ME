@@ -1341,3 +1341,44 @@ a:hover { color: var(--primary-dark); }
   .login-logo { width: 64px; height: 64px; }
   .login-header h1 { font-size: 16px; }
 }
+
+/* ============================================================
+   GRID UNTUK ITEM ERROR (3 KOLOM)
+   ============================================================ */
+.item-group-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Bagi jadi 3 kolom */
+  gap: 10px 20px; /* Jarak antar baris dan kolom */
+  padding: 16px;
+}
+
+/* Menghilangkan garis putus-putus (border-bottom) bawaan dari desain lama */
+.item-checkbox {
+  border-bottom: none !important;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Menyesuaikan ukuran teks agar muat di 3 kolom */
+.item-checkbox .checkbox-label {
+  align-items: flex-start; /* Teks rata atas jika panjang */
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.item-checkbox .checkbox-label input[type="checkbox"] {
+  margin-top: 2px; /* Menyejajarkan kotak centang dengan baris pertama teks */
+}
+
+/* Responsif untuk layar HP/Tablet */
+@media (max-width: 1024px) {
+  .item-group-body {
+    grid-template-columns: repeat(2, 1fr); /* Jadi 2 kolom di tablet */
+  }
+}
+@media (max-width: 768px) {
+  .item-group-body {
+    grid-template-columns: 1fr; /* Jadi 1 kolom di HP */
+  }
+}
