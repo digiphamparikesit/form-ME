@@ -11,7 +11,7 @@ let currentFilter = 'pending';
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   await renderLayout('verifikasi.html');
-  currentProfile = await requireRole(['admin', 'pj']);
+  currentProfile = await requireRole(['admin', 'pj', 'kepala']);
   if (!currentProfile) return;
 
   bindEvents();
