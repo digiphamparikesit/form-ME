@@ -158,7 +158,7 @@ function renderItems() {
             <input type="checkbox" class="item-check" data-id="${item.id}" data-lain="${isLain}">
             <span>${escapeHtml(item.nama_item)}</span>
           </label>
-          <div class="item-lain-input" id="lain-${item.id}" style="display:none;">
+          <div class="item-lain-input" id="lain-${item.id}" style="display:none; margin-left: 24px; margin-top: 6px; width: 100%;">
             <input type="text" class="form-control form-control-sm" placeholder="Sebutkan..." data-lain-id="${item.id}">
           </div>
         </div>
