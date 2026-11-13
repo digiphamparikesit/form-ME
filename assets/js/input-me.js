@@ -480,7 +480,7 @@ async function saveLaporan(status) {
       tgl_laporan: document.getElementById('tglLaporan').value,
       jam_laporan: document.getElementById('jamLaporan').value,
       ruangan_id: parseInt(document.getElementById('ruanganId').value), // Ambil dari hidden input
-      petugas_id: currentProfile.id,
+      petugas_id: isEdit ? undefined : currentProfile.id,
       nama_pasien: document.getElementById('namaPasien').value.trim(),
       no_rm: document.getElementById('noRm').value.trim(),
       nama_dpjp: document.getElementById('namaDpjp').value.trim() || null,
