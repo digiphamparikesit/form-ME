@@ -470,6 +470,12 @@ async function saveLaporan(status) {
   const editId = btnSubmit.dataset.editId;
   const isEdit = !!editId;
 
+  // --- LOGIKA BARU: Jika Kepala Ruangan yang mengedit, otomatis terverifikasi ---
+  const isVerifikator = currentProfile.role === 'kepala' || currentProfile.role === 'admin';
+  if (isEdit && isVerifikator) {
+    status = 'verified'; // Paksa status jadi verified saat simpan
+  }
+
   btnSave.disabled = true;
   btnSubmit.disabled = true;
 
@@ -479,7 +485,7 @@ async function saveLaporan(status) {
       jam_temuan: document.getElementById('jamTemuan').value,
       tgl_laporan: document.getElementById('tglLaporan').value,
       jam_laporan: document.getElementById('jamLaporan').value,
-      ruangan_id: parseInt(document.getElementById('ruanganId').value), // Ambil dari hidden input
+      ruangan_id: parseInt(document.getElementById('ruanganId').value),
       petugas_id: isEdit ? undefined : currentProfile.id,
       nama_pasien: document.getElementById('namaPasien').value.trim(),
       no_rm: document.getElementById('noRm').value.trim(),
@@ -487,7 +493,11 @@ async function saveLaporan(status) {
       grade: selectedGrade,
       deskripsi_kejadian: document.getElementById('deskripsiKejadian').value.trim(),
       tindakan: document.getElementById('tindakan').value.trim() || null,
-      status: status
+      status: status,
+      
+      // Tambahkan penanda verifikator
+      verified_by: (isEdit && isVerifikator) ? currentProfile.id : null,
+      verified_at: (isEdit && isVerifikator) ? new Date().toISOString() : null
     };
 
     let laporanId = editId;
@@ -518,7 +528,7 @@ async function saveLaporan(status) {
       if (errDetail) throw errDetail;
     }
 
-    const msg = isEdit ? 'diperbarui' : 'tersimpan';
+    const msg = isEdit ? (isVerifikator ? 'diperbarui & diverifikasi' : 'diperbarui') : 'tersimpan';
     showToast(`✅ Laporan berhasil ${msg}`, 'success');
 
     setTimeout(() => {
