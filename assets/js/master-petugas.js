@@ -76,6 +76,7 @@ function badgeRoleClass(role) {
   return {
     admin: 'badge-danger',
     pj: 'badge-warning',
+    kepala: 'badge-warning', // <-- Tambahan untuk Kepala Ruangan
     petugas: 'badge-info'
   }[role] || 'badge-secondary';
 }
