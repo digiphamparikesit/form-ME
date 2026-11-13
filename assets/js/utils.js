@@ -67,3 +67,18 @@ function statusLabel(status) {
   };
   return map[status] || status;
 }
+
+// ============================================================
+// TAMBAHKAN BAGIAN INI DI PALING BAWAH
+// ============================================================
+/** Label untuk Role Pengguna */
+function roleLabel(role) {
+  const map = {
+    admin: 'Administrator',
+    petugas: 'Petugas (Input)',
+    pj: 'Kepala Ruangan / PJ',
+    kepala: 'Kepala Ruangan'
+  };
+  return map[role] || role;
+}
+
